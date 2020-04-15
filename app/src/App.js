@@ -1,19 +1,21 @@
 import React from 'react';
 import './App.css';
-import { Switch, Route, Redirect } from 'react-router-dom';
-import Signup from './Signup.js';
-import Signin from './Signin.js';
-import Profile from './Profile.js';
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
+import Signup from './signup.js';
+import Signin from './signin.js';
+import Profile from './profile.js';
 
 
 function App() {
   return (
-    <Switch>
-      <Route exact path="/signup" component={Signup} />
-      <Route exact path="/profile" component={Profile} />
-      <Route exact path="/signin" component={Signin} />
-      <Route path="/" component={() => <Redirect to="/signin" />} />
-    </Switch>
+    <Router>
+      <Switch>
+        <Route exact path="/signup" component={Signup} />
+        <Route exact path="/profile" component={Profile} />
+        <Route exact path="/signin" component={Signin} />
+        <Route path="/" component={() => <Redirect to="/signin" />} />
+      </Switch>
+    </Router>
   );
 }
 
