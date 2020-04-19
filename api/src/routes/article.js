@@ -69,7 +69,7 @@ router.get('/find', auth.requireUserLogin, (req, res) => {
 
     Article.findAll({
         where: whereCondition,
-        attributes: ['title', 'text'],
+        attributes: ['id','title', 'text'],
         include: [{ model: User, as: 'author', attributes: ['firstName', 'lastName'] }]
     })
     .then((articles) => {
@@ -80,6 +80,33 @@ router.get('/find', auth.requireUserLogin, (req, res) => {
         } else {
             res.send({
                 articles
+            });
+        }
+    })
+});
+
+router.get('/', auth.requireUserLogin, (req, res) => {
+    const articleId = req.query.articleId;
+
+    if (!articleId) {
+        return res.send({ error: 'Missing parameters' });
+    }
+
+    Article.findOne({
+        where: {
+            id: articleId
+        },
+        attributes: ['id', 'title', 'text'],
+        include: [{ model: User, as: 'author', attributes: ['firstName', 'lastName'] }]
+    })
+    .then((article) => {
+        if (!article) {
+            res.send({
+                error: 'No article was found.'
+            });
+        } else {
+            res.send({
+                article
             });
         }
     })

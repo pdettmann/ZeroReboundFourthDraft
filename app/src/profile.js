@@ -1,70 +1,65 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
+import apiClient from './apiClient';
+import { Redirect } from 'react-router-dom';
 
-class Profile extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-        users: [],
-        articles: [],
-        comments: [],
-        loaded: false,
-        placeholder: 'Loading'
-        };
-    }
+function Profile () {
+    const [user, setUser] = useState();
+    const [articles, setArticles] = useState();
+    const [redirectUrl, setRedirectUrl] = useState();
 
-    componentDidMount() {
-        fetch("api/User")
-        .then(response => response.json())
-        .then(users => {
-            this.setState({ users, loaded: true});
-
-            return fetch('api/Article');
-        })
-        .then(response => response.json())
-        .then(articles => {
-            this.setState({ articles, loaded: true });
-
-            return fetch('api/Comment');
-        })
-        .then(response => response.json())
-        .then(comments => {
-            this.setState({ comments, loaded: true});
+    useEffect(() => {
+        apiClient.get('/user/profile')
+        .then((res) => {
+            setUser(res.data.user);
         })
         .catch((err) => {
-            console.error(err);
-            this.setState({ placeholder: err.message });
+            console.log(err);
+            setRedirectUrl("/signin");
         });
+
+        apiClient.get('/user/articles')
+        .then((res) => {
+            setArticles(res.data.articles);
+        })
+        .catch((err) => {
+            console.log(err);
+            setRedirectUrl("/createArticle");
+        });
+    }, []);
+
+    if (redirectUrl) {
+        return <Redirect to={redirectUrl} />
     }
 
-    render() {
-        return (
+    if (!user || !articles) {
+        return <div/>;
+    }
+
+
+
+    return (
+        <div>
+            <h1>Welcome {user.firstName} </h1>
+            <h2> Name: {user.firstName} {user.lastName}</h2>
+            <h2> Email: {user.email}</h2>
+            <img src={user.avatarUrl} alt="profile picture" height="70pt" width="70pt"></img>
+            <button type='createArticle' onClick={() => setRedirectUrl('/createArticle')}>Create an Article </button><br></br>
             <div>
-            <ul>
-                {this.state.users.map((users) => {
-                return (
-                    <li key={users.user_id}>
-                    {users.first_name} - {users.last_name} - {users.email}
-                    </li>
-                )
-                })}
-            </ul>
-
-            {this.state.articles.map((articles) => {
-                return (
-                <p> {articles.text} </p>
-                )
+            {articles.map((article) => {
+                return  (
+                        <div key={article.id}>
+                            <a href={`/article/${article.id}`}>
+                                <div>
+                                    <h1>{article.title}</h1>
+                                </div>
+                            </a>
+                        </div>
+                        )
             })}
-
-
-            {this.state.comments.map((comments) => {
-                return (
-                <p> {comments.user} - {comments.comment_text} </p>
-                )
-            })}
-
             </div>
-        );
-    }
+        </div>
+    )
+
 }
 
 export default Profile;

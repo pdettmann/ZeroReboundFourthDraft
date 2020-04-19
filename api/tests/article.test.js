@@ -98,5 +98,7 @@ test('uploads image', async (done) => {
         done();
     });
 
+    // test if the buffer or something is the same
+
     fs.unlinkSync(filename);
 })

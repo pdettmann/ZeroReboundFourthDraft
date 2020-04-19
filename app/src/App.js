@@ -4,6 +4,8 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-d
 import Signup from './signup.js';
 import Signin from './signin.js';
 import Profile from './profile.js';
+import Article from './article.js';
+import CreateArticle from './createArticle';
 
 
 function App() {
@@ -13,6 +15,8 @@ function App() {
         <Route exact path="/signup" component={Signup} />
         <Route exact path="/profile" component={Profile} />
         <Route exact path="/signin" component={Signin} />
+        <Route exact path="/article/create" component={CreateArticle} />
+        <Route path="/article/:id" component={Article} />
         <Route path="/" component={() => <Redirect to="/signin" />} />
       </Switch>
     </Router>

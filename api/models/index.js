@@ -7,8 +7,10 @@ const basename = path.basename(__filename);
 const config = require(__dirname + '/../config/database.js');
 const db = {};
 
+// setting up a connection to the database
 const sequelize = new Sequelize(config.database, config.username, config.password, config);
 
+// reads every file in models and sets any associations between models, foreign keys, cascades, etc.
 fs
   .readdirSync(__dirname)
   .filter(file => {

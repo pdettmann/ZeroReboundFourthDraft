@@ -1,55 +1,41 @@
-import React from "react";
-import axios from 'axios';
+import React, {useState} from "react";
+import apiClient from './apiClient';
+import { Redirect } from 'react-router-dom';
 
-export default class Signin extends React.Component {
-    state= {
-        email: '',
-        password: '',
-    }
+function Signin () {
 
-    handleChange = event => {
-        this.setState({
-            email: event.target.value,
-            password: event.target.value,
-        });
-    }
+    const [email, setEmail] = useState();
+    const [password, setPassword] = useState();
+    const [redirectUrl, setRedirectUrl] = useState();
 
-    handleSubmit = event => {
-        event.preventDefault();
-
-        const user = {
-            email: this.state.email,
-            password: this.state.password,
-        };
-
-        axios.post('/user/auth', {user})
+    const performSignin = () => {
+        apiClient.post('/user/auth', {email, password})
             .then( (res) => {
                 console.log(res);
                 console.log(res.data);
+                setRedirectUrl('/profile')
             })
             .catch((err) => {
-            console.log(err);
-            });;;;
-
+                console.log(err);
+            });
     }
 
-    render () {
-        return (
-            <div class='signin'>
-                <form onSubmit={this.handleSubmit}>
-                    <label>Email
-                    <input type="text" id="email" name="email" onChange={this.handleChange}/>
-                    </label><br></br>
-                    <label>Password
-                    <input type="text" id="password" name="password"/>
-                    </label><br></br>
-                    <button type='submit'> Submit </button><br></br>
-                    <button type='signup'>Register </button><br></br>
-                </form>
-            </div>
-        )
+    if (redirectUrl) {
+        return <Redirect to={redirectUrl} />
     }
 
+    return (
+        <div className='signin'>
+            <label>Email
+                <input type="text" id="email" name="email" onChange={(event)=> setEmail(event.target.value)}/>
+            </label><br></br>
+            <label>Password
+                <input type="password" id="password" name="password"  onChange={(event)=> setPassword(event.target.value)}/>
+            </label><br></br>
+            <button type='submit' onClick={() => performSignin()}> Submit </button><br></br>
+            <button type='signup' onClick={() => setRedirectUrl('/signup')}>Register </button><br></br>
+        </div>
+    );
+};
 
-}
-
+export default Signin;

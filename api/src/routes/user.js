@@ -1,6 +1,6 @@
 const express = require('express');
 const auth = require('../middlewares/auth');
-const { User } = require('../../models');
+const { User, Article } = require('../../models');
 const crypto = require('crypto');
 const { getGravatarUrl } = require('../utils')
 
@@ -70,6 +70,7 @@ router.post('/auth', (req, res) => {
             if (user.hashedPassword !== hashedPassword) {
                 res.send({ error: 'Invalid login.' });
             } else {
+                req.session.userId = user.id;
                 res.send({
                     user: {
                         firstName: user.firstName,
@@ -113,9 +114,32 @@ router.get('/profile', auth.requireUserLogin, (req, res) => {
     });
 });
 
+router.get('/articles', auth.requireUserLogin, (req, res) => {
+    const userId = req.session.userId;
+
+    Article.findAll({
+        where: {userId},
+        attributes: ['id', 'title', 'text'],
+        include: [{ model: User, as: 'author', attributes: ['firstName', 'lastName'] }]
+    })
+    .then((articles) => {
+        if (!articles) {
+            res.send({
+                error: 'No articles were found.'
+            });
+        } else {
+            res.send({
+                articles
+            });
+        }
+    })
+});
+
 router.delete('/logout', auth.requireUserLogin, (req, res) => {
     req.session.destroy();
     res.sendStatus(200);
 });
+
+
 
 module.exports = router;
