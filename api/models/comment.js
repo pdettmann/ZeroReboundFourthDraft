@@ -20,7 +20,10 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
 
   Comment.associate = function(models) {
-    models.Comment.belongsTo(models.User, { as: 'commenter', foreignKey: 'userId' })
+    models.Comment.belongsTo(models.User, { as: 'commenter', foreignKey: 'userId' });
+    models.Comment.hasMany(models.ArticlesComments, { as: 'comments' ,foreignKey: 'commentId' });
+    models.Comment.hasMany(models.CommentVersion, { as: 'comments' ,foreignKey: 'commentId' });
+
   };
 
   return Comment;

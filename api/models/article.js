@@ -28,6 +28,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   Article.associate = function(models) {
     models.Article.belongsTo(models.User, { as: 'author', foreignKey: 'userId' })
+    models.Article.hasMany(models.ArticlesComments, { as: 'articles' ,foreignKey: 'articleId' });
+    models.Article.hasMany(models.ArticleVersion, {foreignKey: 'articleId' });
   };
   return Article;
 };
