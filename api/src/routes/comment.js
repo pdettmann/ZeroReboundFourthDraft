@@ -1,23 +1,32 @@
 const express = require('express');
 const auth = require('../middlewares/auth');
-const { User, Comment } = require('../../models');
+const { User, Comment, ArticlesComments } = require('../../models');
 const { getGravatarUrl } = require('../utils')
 const Sequelize = require('sequelize');
 const router = express.Router();
 
 router.post('/create', auth.requireUserLogin, (req, res) => {
-    const { userId }= req.session;
-    const { text } = req.body;
+    const { userId } = req.session;
+    const { text, articleId } = req.body;
+
 
     Comment.create({
         userId: userId,
         text: text,
     })
     .then((comment) => {
-        res.send({
-            comment: {
-                text: comment.text
-            }
+        ArticlesComments.create({
+            articleId: articleId,
+            commentId: comment.id,
+        }).then(() => {
+            res.send({
+                comment: {
+                    text: comment.text
+                }
+            });
+        })
+        .catch((error) => {
+            console.error(error)
         });
     })
     .catch((error) => {
@@ -29,7 +38,7 @@ router.post('/create', auth.requireUserLogin, (req, res) => {
     });
 });
 
-router.get('/find', auth.requireUserLogin, (req, res) => {
+router.get('/findByText', auth.requireUserLogin, (req, res) => {
     const text = req.query.text;
 
     if (!text) {
@@ -60,6 +69,49 @@ router.get('/find', auth.requireUserLogin, (req, res) => {
             });
         }
     })
+
+});
+
+router.get('/findByArticleId', auth.requireUserLogin, (req, res) => {
+    const articleId = req.query.articleId;
+
+    if (!articleId) {
+        return res.send({ error: 'Missing parameters' });
+    }
+
+    ArticlesComments.findAll({
+        where: {
+            articleId: articleId,
+        },
+        attributes: ['commentId'],
+        include: [{ model: Comment, attributes: ['userId', 'text', 'createdAt'] }]
+    })
+    .then((comments) => {
+        if (comments.length === 0) {
+            res.send({
+                error: 'No comments were found.'
+            });
+        } else {
+            comments.forEach((comment) => {
+                // comment.dataValues.avatarUrl = getGravatarUrl(comment.commenter.email);
+            });
+
+            res.send({
+                comments
+            });
+        }
+    })
+
+
+        //     for each commentId in commentIds;
+        //     Comment.findOne(
+        //     where{
+        //         commentId: commentId,
+        //     }
+        // append to comments????
+        // .then((comments))
+        // res.send(comments)
+        // )
 
 });
 

@@ -74,11 +74,11 @@ test('uploads image', async (done) => {
 
     const imagePath = `${__dirname}/../static/meme.png`;
 
-    const fd = new FormData();
+    const formData = new FormData();
     const blob = new Blob([fs.readFileSync(imagePath)], { type: 'image/jpeg' });
-    fd.append('imageFile', blob);
+    formData.append('imageFile', blob);
 
-    const result = await client.post('/article/imageupload', fd, {
+    const result = await client.post('/article/imageupload', formData, {
         headers : {
             'Content-Type' : 'multipart/form-data',
         },
@@ -98,7 +98,7 @@ test('uploads image', async (done) => {
         done();
     });
 
-    // test if the buffer or something is the same
+    // need to test if the image is exactly the same
 
     fs.unlinkSync(filename);
 })

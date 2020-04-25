@@ -23,7 +23,7 @@ module.exports = {
     .then(() => {
       return queryInterface
         .addColumn('Articles', 'text', {
-          type: Sequelize.STRING,
+          type: Sequelize.TEXT,
           validate: {
             notNull: true,
           }

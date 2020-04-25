@@ -15,7 +15,7 @@ module.exports = {
       .then(() => {
         return queryInterface
           .addColumn('Comments', 'text', {
-            type: Sequelize.STRING,
+            type: Sequelize.TEXT,
             validate: {
               notNull: true,
             }

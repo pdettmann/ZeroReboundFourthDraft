@@ -8,6 +8,7 @@ module.exports = (sequelize, DataTypes) => {
       references: {
         model:'Articles',
         key:'id',
+        as: 'article'
       }
     },
     title: {
@@ -25,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
 
 
   ArticleVersion.associate = function(models) {
-    models.ArticleVersion.belongsTo(models.Article, {foreignKey: 'articleId' });
+    models.ArticleVersion.belongsTo(models.Article, {as: 'article', foreignKey: 'articleId' });
   }
   return ArticleVersion;
 };

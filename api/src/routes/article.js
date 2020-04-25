@@ -21,6 +21,7 @@ router.post('/create', auth.requireUserLogin, (req, res) => {
             res.send({
                 error: 'Article already exists'
             })
+        // return
         }else {
             Article.create({
                 title: title,
@@ -45,7 +46,7 @@ router.post('/create', auth.requireUserLogin, (req, res) => {
         }
     })
 
-
+// createArticle(title, text, userId, res) =>
 
 });
 

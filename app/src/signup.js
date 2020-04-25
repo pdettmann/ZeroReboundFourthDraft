@@ -48,10 +48,10 @@ function Signup () {
                 <input type="text" id="email" name="email" onChange={(event)=> setEmail(event.target.value)}/>
             </label><br></br>
             <label>Password:
-                <input type="text" id="password" name="password" onChange={(event)=> setPassword(event.target.value)}/>
+                <input type="password" id="password" name="password" onChange={(event)=> setPassword(event.target.value)}/>
             </label><br></br>
             <label>Repeat password:
-                <input type="text" id="passwordTwo" name="passwordTwo" onChange={(event)=> setPasswordTwo(event.target.value)}></input>
+                <input type="password" id="passwordTwo" name="passwordTwo" onChange={(event)=> setPasswordTwo(event.target.value)}></input>
             </label><br></br>
             <button type='submit' onClick={() => performSignup()}> Submit </button><br></br>
         </div>
