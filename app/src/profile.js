@@ -39,6 +39,18 @@ function Profile () {
         })
     };
 
+    const deleteUserFunction = () => {
+        apiClient.delete('/user/deleteUser')
+        .then((res) => {
+            console.log(res);
+            setRedirectUrl('/signin');
+        })
+        .catch((err) => {
+            console.log(err);
+            setRedirectUrl('/profile');
+        })
+    }
+
     if (redirectUrl) {
         return <Redirect to={redirectUrl} />
     }
@@ -51,7 +63,9 @@ function Profile () {
 
     return (
         <div>
+            <button onClick={() => setRedirectUrl('/home')}>Home</button>
             <button onClick={() => logoutFunction()}>Logout</button><br></br>
+            <button onClick={() => deleteUserFunction()}>Delete account</button><br></br>
             <h1>Welcome {user.firstName} </h1>
             <h2> Name: {user.firstName} {user.lastName}</h2>
             <h2> Email: {user.email}</h2>

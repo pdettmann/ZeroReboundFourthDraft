@@ -84,16 +84,26 @@ router.get('/findByArticleId', auth.requireUserLogin, (req, res) => {
             articleId: articleId,
         },
         attributes: ['commentId'],
-        include: [{ model: Comment, attributes: ['userId', 'text', 'createdAt'] }]
+        include: [
+            {
+                model: Comment,
+                as: 'comment',
+                attributes: ['userId', 'text', 'createdAt'],
+                include: { model: User, as: 'commenter', attributes: ['email', 'firstName', 'lastName'] }
+            }
+        ]
     })
-    .then((comments) => {
+    .then((articlesComments) => {
+        const comments = articlesComments.map((e) => e.comment);
+
         if (comments.length === 0) {
             res.send({
                 error: 'No comments were found.'
             });
         } else {
             comments.forEach((comment) => {
-                // comment.dataValues.avatarUrl = getGravatarUrl(comment.commenter.email);
+                comment.dataValues.avatarUrl = getGravatarUrl(comment.commenter.email);
+                delete comment.dataValues.commenter.dataValues.email;
             });
 
             res.send({
@@ -101,17 +111,6 @@ router.get('/findByArticleId', auth.requireUserLogin, (req, res) => {
             });
         }
     })
-
-
-        //     for each commentId in commentIds;
-        //     Comment.findOne(
-        //     where{
-        //         commentId: commentId,
-        //     }
-        // append to comments????
-        // .then((comments))
-        // res.send(comments)
-        // )
 
 });
 

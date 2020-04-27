@@ -61,6 +61,7 @@ router.post('/auth', (req, res) => {
     })
     .then((user) => {
         if (user === null) {
+            res.status(401);
             res.send({ error: 'Invalid login.' });
         } else {
             const hash = crypto.createHash('sha512');
@@ -68,6 +69,7 @@ router.post('/auth', (req, res) => {
             const hashedPassword = data.digest('hex');
 
             if (user.hashedPassword !== hashedPassword) {
+                res.status(401);
                 res.send({ error: 'Invalid login.' });
             } else {
                 req.session.userId = user.id;
@@ -138,6 +140,22 @@ router.get('/articles', auth.requireUserLogin, (req, res) => {
 router.delete('/logout', auth.requireUserLogin, (req, res) => {
     req.session.destroy();
     res.sendStatus(200);
+});
+
+router.delete('/deleteUser', auth.requireUserLogin, (req, res) => {
+    const userId = req.session.userId;
+
+    User.destroy({
+        where: {
+            id: userId,
+        }
+    })
+    .then(() => {
+        req.session.destroy();
+        res.sendStatus(200);
+    })
+    // handle error
+
 });
 
 

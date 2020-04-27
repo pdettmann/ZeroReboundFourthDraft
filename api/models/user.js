@@ -33,8 +33,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
 
   User.associate = function(models) {
-    models.User.hasMany(models.Article, { as: 'articles', foreignKey: 'userId' });
-    models.User.hasMany(models.Comment, { as: 'comments', foreignKey: 'userId' });
+    models.User.hasMany(models.Article, { as: 'articles', foreignKey: 'userId', onDelete: 'cascade', hooks: true});
+    models.User.hasMany(models.Comment, { as: 'comments', foreignKey: 'userId', onDelete: 'cascade', hooks: true });
     models.User.hasMany(models.UserVersion, {foreignKey: 'userId' });
   };
 

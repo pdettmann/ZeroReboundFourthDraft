@@ -14,6 +14,7 @@ module.exports = {
           model:'Comments',
           key:'id',
         },
+        onDelete: 'CASCADE',
         type: Sequelize.INTEGER
       },
       text: {

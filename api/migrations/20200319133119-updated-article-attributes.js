@@ -17,7 +17,8 @@ module.exports = {
             model: 'Users',
             key: 'id',
             as: 'author'
-          }
+          },
+          onDelete: 'CASCADE',
         });
     })
     .then(() => {

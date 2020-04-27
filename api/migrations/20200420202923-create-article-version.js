@@ -14,6 +14,7 @@ module.exports = {
           model:'Articles',
           key:'id',
         },
+        onDelete: 'CASCADE',
         type: Sequelize.INTEGER
       },
       title: {

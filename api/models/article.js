@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
         model: 'Users',
         key: 'id',
         as: 'author'
-      }
+      },
     },
     text: {
       type: DataTypes.TEXT,
@@ -28,8 +28,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   Article.associate = function(models) {
     models.Article.belongsTo(models.User, { as: 'author', foreignKey: 'userId' })
-    models.Article.hasMany(models.ArticlesComments, { as: 'articles' ,foreignKey: 'articleId' });
-    models.Article.hasMany(models.ArticleVersion, {foreignKey: 'articleId' });
+    models.Article.hasMany(models.ArticlesComments, { as: 'articles' ,foreignKey: 'articleId', onDelete: 'cascade', hooks: true });
+    models.Article.hasMany(models.ArticleVersion, {foreignKey: 'articleId', onDelete: 'cascade', hooks: true });
   };
   return Article;
 };

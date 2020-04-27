@@ -1,11 +1,32 @@
 const express = require('express');
 const auth = require('../middlewares/auth');
 const AWS = require('aws-sdk');
-const { User, Article } = require('../../models');
+const { User, Article, Comment } = require('../../models');
 const Sequelize = require('sequelize');
 const uuidv4 = require('uuid/v4')
 const fs = require('fs');
 const router = express.Router();
+
+router.get('/home', (req, res) => {
+
+    Article.findAll({
+        limit: 3,
+        order: [['createdAt', 'DESC']],
+        attributes: ['id','title', 'text', 'createdAt'],
+        include: [{ model: User, as: 'author', attributes: ['firstName', 'lastName'] }],
+    })
+    .then((articles) => {
+        if (!articles) {
+            res.send({
+                error: 'No articles'
+            })
+        }else {
+           res.send ({
+               articles
+            })
+        }
+    })
+})
 
 
 router.post('/create', auth.requireUserLogin, (req, res) => {
@@ -86,7 +107,7 @@ router.get('/find', auth.requireUserLogin, (req, res) => {
     })
 });
 
-router.get('/', auth.requireUserLogin, (req, res) => {
+router.get('/', (req, res) => {
     const articleId = req.query.articleId;
 
     if (!articleId) {

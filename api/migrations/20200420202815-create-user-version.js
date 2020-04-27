@@ -15,6 +15,7 @@ module.exports = {
           model:'Users',
           key:'id',
         },
+        onDelete: 'CASCADE',
         type: Sequelize.INTEGER
       },
       firstName: {

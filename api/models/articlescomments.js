@@ -20,8 +20,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
 
   ArticlesComments.associate = function(models) {
-    models.ArticlesComments.belongsTo(models.Comment, { foreignKey: 'commentId' });
-    models.ArticlesComments.belongsTo(models.Article, { foreignKey: 'articleId' })
+    models.ArticlesComments.belongsTo(models.Comment, { as: 'comment', foreignKey: 'commentId' });
+    models.ArticlesComments.belongsTo(models.Article, { as: 'article', foreignKey: 'articleId' })
   };
   return ArticlesComments;
 };

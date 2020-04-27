@@ -8,7 +8,7 @@ function Article (props) {
     const [article, setArticle] = useState();
     const [redirectUrl, setRedirectUrl] = useState();
     const [text, setText] = useState();
-    const [comments, setComments] = useState();
+    const [comments, setComments] = useState([]);
 
     const performCreateComment = () => {
         apiClient.post('/comment/create', {
@@ -46,23 +46,43 @@ function Article (props) {
         return <div/>;
     }
 
-    return (
-        <div>
-            {article.title}<br></br><br></br>
-            {article.text}<br></br><br></br>
-            <input type="text" id="comment" name="comment" placeholder="comment" onChange={(event) => setText(event.target.value)}/>
-            <button type='submit' onClick={() => performCreateComment()}> Comment </button><br></br>
+    if (!comments) {
+        return (
             <div>
-            {comments.map((comment) => {
-                return  (
-                        <div key={comment.id}>
-                            <h1>{comment.text}</h1>
-                        </div>
-                )
-            })}
+                <button onClick={() => setRedirectUrl('/home')}>Home</button>
+                <input type="text" id='searchBar' placeholder='Search...' /><br></br><br></br>
+                    {article.title}<br></br><br></br>
+                    {article.text}<br></br><br></br>
+                <input type="text" id="comment" name="comment" placeholder="comment" onChange={(event) => setText(event.target.value)}/>
+                <button type='submit' onClick={() => performCreateComment()}> Comment </button><br></br>
             </div>
-        </div>
-    )
+        )
+    } else {
+        return (
+            <div>
+                <button onClick={() => setRedirectUrl('/home')}>Home</button>
+                <input type="text" id='searchBar' placeholder='Search...' /><br></br><br></br>
+                {article.title}<br></br><br></br>
+                {article.text}<br></br><br></br>
+                <input type="text" id="comment" name="comment" placeholder="comment" onChange={(event) => setText(event.target.value)}/>
+                <button type='submit' onClick={() => performCreateComment()}> Comment </button><br></br>
+                <div><br></br>
+                {comments.map((comment) => {
+                    return  (
+                            <div key={comment.id}>
+                                <img src={comment.avatarUrl} alt='user image'></img>
+                                <h3>{comment.commenter.firstName} {comment.commenter.lastName}</h3>
+                                <p>{comment.text}</p>
+                            </div>
+                    )
+                })}
+                </div>
+            </div>
+        )
+    }
+
+
+
 };
 
 export default Article;

@@ -7,21 +7,29 @@ function Signin () {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [redirectUrl, setRedirectUrl] = useState();
+    const [error, setError] = useState();
 
     const performSignin = () => {
         apiClient.post('/user/auth', {email, password})
-            .then( (res) => {
-                console.log(res);
-                console.log(res.data);
+            .then((res) => {
+                console.log(res)
                 setRedirectUrl('/profile')
             })
-            .catch((err) => {
-                console.log(err);
+            .catch((error) => {
+                console.log(error);
+                setError('invalid login')
             });
     }
 
     if (redirectUrl) {
         return <Redirect to={redirectUrl} />
+    }
+
+    if (error) {
+        return (
+            alert(error),
+            window.location.reload()
+        )
     }
 
     return (
