@@ -20,6 +20,9 @@ function Home () {
         return <Redirect to={redirectUrl} />
     }
 
+    // if (user is logged in ) {
+
+    // }
     return (
         <div>
             <button onClick={() => setRedirectUrl('/profile')}>Profile</button>

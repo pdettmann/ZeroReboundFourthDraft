@@ -1,33 +1,33 @@
 'use strict';
 
 module.exports = {
-  up: (queryInterface, Sequelize) => {
-    return queryInterface
-        .addColumn('Comments', 'userId', {
-          type: Sequelize.INTEGER,
-          allowNull: false,
-          references: {
-            model: 'Users',
-            key: 'id',
-            as: 'author'
-          },
-          onDelete: 'CASCADE',
-        })
-      .then(() => {
-        return queryInterface
-          .addColumn('Comments', 'text', {
-            type: Sequelize.TEXT,
-            validate: {
-              notNull: true,
-            }
-          });
-      })
-  },
+	up: (queryInterface, Sequelize) => {
+		return queryInterface
+				.addColumn('Comments', 'userId', {
+					type: Sequelize.INTEGER,
+					allowNull: false,
+					references: {
+						model: 'Users',
+						key: 'id',
+						as: 'author'
+					},
+					onDelete: 'CASCADE',
+				})
+			.then(() => {
+				return queryInterface
+					.addColumn('Comments', 'text', {
+						type: Sequelize.TEXT,
+						validate: {
+							notNull: true,
+						}
+					});
+			})
+	},
 
-  down: (queryInterface, Sequelize) => {
-    return queryInterface.removeColumn('Comments', 'userId')
-      .then(() => {
-        return queryInterface.removeColumn('Comments', 'text');
-      });
-  }
+	down: (queryInterface, Sequelize) => {
+		return queryInterface.removeColumn('Comments', 'userId')
+			.then(() => {
+				return queryInterface.removeColumn('Comments', 'text');
+			});
+	}
 };

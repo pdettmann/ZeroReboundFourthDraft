@@ -1,29 +1,34 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import apiClient from './apiClient';
 import { Redirect } from 'react-router-dom';
+import { UserContext } from './userContext';
 
 function Profile () {
-    const [user, setUser] = useState();
     const [articles, setArticles] = useState();
     const [redirectUrl, setRedirectUrl] = useState();
+    const [error, setError] = useState();
+    const [user, setUser] = useContext(UserContext);
 
+    console.log(user);
+
+    // TODO: use async await
     useEffect(() => {
         apiClient.get('/user/profile')
         .then((res) => {
             setUser(res.data.user);
-        })
-        .catch((err) => {
-            console.log(err);
-            setRedirectUrl("/signin");
-        });
 
-        apiClient.get('/user/articles')
-        .then((res) => {
-            setArticles(res.data.articles);
+            apiClient.get('/user/articles')
+            .then((res) => {
+                setArticles(res.data.articles);
+            })
+            .catch((err) => {
+                console.log(err);
+                setRedirectUrl("/createArticle");
+            });
         })
         .catch((err) => {
             console.log(err);
-            setRedirectUrl("/createArticle");
+            setUser();
         });
     }, []);
 
@@ -47,8 +52,27 @@ function Profile () {
         })
         .catch((err) => {
             console.log(err);
-            setRedirectUrl('/profile');
+            setError('Something went wrong, user account could not be deleted')
         })
+    }
+
+    const deleteArticleFunction = (articleId) => {
+        apiClient.delete(`/article/deleteArticle?articleId=${articleId}`)
+        .then((res) => {
+            const newArticles = articles.filter((article) => {
+                return article.id != articleId;
+            });
+
+            setArticles(newArticles);
+        })
+        .catch((err) => {
+            console.log(err);
+            setError('Something went wrong, article could not be deleted')
+        })
+    }
+
+    if (!user) {
+        return <Redirect to="/signin" />
     }
 
     if (redirectUrl) {
@@ -59,7 +83,10 @@ function Profile () {
         return <div/>;
     }
 
-
+    if (error) {
+        alert(error);
+        setError(undefined);
+    }
 
     return (
         <div>
@@ -80,6 +107,7 @@ function Profile () {
                                     <h1>{article.title}</h1>
                                 </div>
                             </a>
+                            <button onClick={() => deleteArticleFunction(article.id)}>Delete Article</button><br></br>
                         </div>
                         )
             })}

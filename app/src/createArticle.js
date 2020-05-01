@@ -1,12 +1,15 @@
-import React, {useState} from "react";
+import React, {useState, useContext} from "react";
 import apiClient from './apiClient';
 import { Redirect } from 'react-router-dom';
+import { UserContext } from './userContext';
 
 function CreateArticle () {
 
     const [title, setTitle] = useState();
     const [text, setText] = useState();
     const [redirectUrl, setRedirectUrl] = useState();
+    const [error, setError] = useState();
+    const [user, setUser] = useContext(UserContext);
 
     if (redirectUrl) {
         return <Redirect to={redirectUrl} />
@@ -14,15 +17,24 @@ function CreateArticle () {
 
     const performCreateArticle = () => {
         apiClient.post('/article/create', {title, text})
-            .then( (res) => {
+            .then((res) => {
                 console.log(res.data);
                 setRedirectUrl('/profile');
             })
             .catch((err) => {
                 console.log(err);
+                setError('Something went wrong')
             });
-
     };
+
+    if (error) {
+        alert(error);
+        setError(undefined);
+    }
+
+    if (!user) {
+        setRedirectUrl('/signin');
+    }
 
     return (
         <div>
