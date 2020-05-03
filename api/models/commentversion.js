@@ -1,4 +1,3 @@
-'use strict';
 module.exports = (sequelize, DataTypes) => {
 	const CommentVersion = sequelize.define('CommentVersion', {
 		commentId: {
@@ -6,9 +5,9 @@ module.exports = (sequelize, DataTypes) => {
 			allowNull: false,
 			primaryKey: true,
 			references: {
-				model:'Comments',
-				key:'id',
-			}
+				model: 'Comments',
+				key: 'id',
+			},
 		},
 		text: {
 			type: DataTypes.TEXT,
@@ -16,8 +15,12 @@ module.exports = (sequelize, DataTypes) => {
 			primaryKey: true,
 		},
 	}, {});
-	CommentVersion.associate = function(models) {
-		models.CommentVersion.belongsTo(models.Comment, {foreignKey: 'commentId' });
-	}
+
+	CommentVersion.associate = function (models) {
+		models.CommentVersion.belongsTo(models.Comment, {
+			foreignKey: 'commentId',
+		});
+	};
+
 	return CommentVersion;
 };

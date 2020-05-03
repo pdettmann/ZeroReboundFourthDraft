@@ -1,11 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const dbConfig = require('../config/database');
 const session = require('express-session');
-const pgSession = require('connect-pg-simple')(session);
+const PgSession = require('connect-pg-simple')(session);
 const pg = require('pg');
 const cors = require('cors');
 const fileUpload = require('express-fileupload');
+const dbConfig = require('../config/database');
+
 const pgPool = new pg.Pool({
 	host: dbConfig.host,
 	user: dbConfig.username,
@@ -23,15 +24,15 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
-	store: dbConfig.env === 'test' ? null : new pgSession({ pool: pgPool }),
+	store: dbConfig.env === 'test' ? null : new PgSession({ pool: pgPool }),
 	secret: process.env.ZR_SESSION_SECRET,
 	resave: false,
 	saveUninitialized: true,
-	cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 } //30 days
+	cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 }, // 30 days
 }));
 
 app.use(fileUpload({
-	useTempFiles : true,
+	useTempFiles: true,
 }));
 
 app.use('/user', require('./routes/user'));

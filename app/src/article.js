@@ -53,7 +53,7 @@ function Article (props) {
         apiClient.delete(`/comment/deleteComment?commentId=${commentId}`)
         .then((res) => {
             const newComments = comments.filter((comment) => {
-                return comment.id != commentId;
+                return comment.id !== commentId;
             });
 
             setComments(newComments);
@@ -101,7 +101,7 @@ function Article (props) {
                 {comments.map((comment) => {
                     return  (
                         <div key={comment.id}>
-                            <img src={comment.avatarUrl} alt='user image'></img>
+                            <img src={comment.avatarUrl} alt='avatar'></img>
                             <h3>{comment.commenter.firstName} {comment.commenter.lastName}</h3>
                             <p>{comment.text}</p>
                             {comment.isCommenter && (

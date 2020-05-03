@@ -17,6 +17,8 @@ module.exports = {
     },
     "rules": {
         "indent": ["error", "tab"],
-        "no-tabs": "off"
+        "no-tabs": "off",
+        "no-param-reassign": "off",
+        "func-names": "off",
     }
 };

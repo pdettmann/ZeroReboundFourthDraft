@@ -1,24 +1,23 @@
-'use strict';
 module.exports = {
-	up: (queryInterface, Sequelize) => {
-		return queryInterface.createTable('Comments', {
+	up: (queryInterface, Sequelize) => (
+		queryInterface.createTable('Comments', {
 			id: {
 				allowNull: false,
 				autoIncrement: true,
 				primaryKey: true,
-				type: Sequelize.INTEGER
+				type: Sequelize.INTEGER,
 			},
 			createdAt: {
 				allowNull: false,
-				type: Sequelize.DATE
+				type: Sequelize.DATE,
 			},
 			updatedAt: {
 				allowNull: false,
-				type: Sequelize.DATE
-			}
-		});
-	},
-	down: (queryInterface, Sequelize) => {
-		return queryInterface.dropTable('Comments');
-	}
+				type: Sequelize.DATE,
+			},
+		})
+	),
+	down: (queryInterface) => (
+		queryInterface.dropTable('Comments')
+	),
 };

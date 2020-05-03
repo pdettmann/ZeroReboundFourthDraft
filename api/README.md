@@ -1,41 +1,29 @@
 ZeroRebound api
 ========
 
-$project will solve your problem of where to start with documentation,
-by providing a basic explanation of how to do it easily.
+A REST API to the ZeroRebound website that retrieves and sends users, articles and comments to and from the backend.
 
-Look how easy it is to use:
-
-    import project
-    # Get your stuff done
-    project.do_stuff()
-
-Features
+Getting Started
 --------
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
-- Be awesome
-- Make things faster
+Prerequisites
+-------------
+install node.js
 
-Installation
-------------
-
-Install $project by running:
-
-    install project
-
-Contribute
+Installing
 ----------
 
-- Issue Tracker: github.com/$project/$project/issues
-- Source Code: github.com/$project/$project
+# install dependencies
+npm install
 
-Support
--------
+# run project
+npm start
 
-If you are having issues, please let us know.
-We have a mailing list located at: project@google-groups.com
+# run all tests
+npm test
 
-License
--------
+Prerequisites Tests
+-------------------
+install jest
 
-The project is licensed under the BSD license.

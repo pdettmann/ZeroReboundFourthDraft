@@ -18,12 +18,11 @@ afterAll(() => {
 });
 
 test('creates user', async () => {
-
 	const data = {
 		firstName: 'Obi-Wan',
 		lastName: 'Kenobi',
 		email: 'obi@kenobi.com',
-		password: 'maytheforcebewithyou'
+		password: 'maytheforcebewithyou',
 	};
 
 	const result = await client.post('/user/create', data);
@@ -33,6 +32,8 @@ test('creates user', async () => {
 	expect(user.firstName).toBe(data.firstName);
 	expect(user.lastName).toBe(data.lastName);
 	expect(user.email).toBe(data.email);
+
+	console.error(error);
 });
 
 test('authenticates user', async () => {
@@ -40,7 +41,7 @@ test('authenticates user', async () => {
 		firstName: 'Obi-Wan',
 		lastName: 'Kenobi',
 		email: 'obi@kenobi.com',
-		password: 'maytheforcebewithyou'
+		password: 'maytheforcebewithyou',
 	};
 
 	const result = await client.post('/user/auth', {
@@ -53,7 +54,6 @@ test('authenticates user', async () => {
 	expect(user.firstName).toBe(data.firstName);
 	expect(user.lastName).toBe(data.lastName);
 	expect(user.email).toBe(data.email);
-
 });
 
 test('fetch user profile', async () => {
@@ -61,7 +61,7 @@ test('fetch user profile', async () => {
 		firstName: 'Obi-Wan',
 		lastName: 'Kenobi',
 		email: 'obi@kenobi.com',
-		gravatarUrl: 'https://www.gravatar.com/avatar/987632e5f40feae61e1f764b163ece4c'
+		gravatarUrl: 'https://www.gravatar.com/avatar/987632e5f40feae61e1f764b163ece4c',
 	};
 
 	const result = await client.get('/user/profile');
@@ -71,5 +71,4 @@ test('fetch user profile', async () => {
 	expect(user.lastName).toBe(data.lastName);
 	expect(user.email).toBe(data.email);
 	expect(user.avatarUrl).toBe(data.gravatarUrl);
-
 });

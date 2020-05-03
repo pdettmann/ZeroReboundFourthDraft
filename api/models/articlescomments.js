@@ -1,4 +1,3 @@
-'use strict';
 module.exports = (sequelize, DataTypes) => {
 	const ArticlesComments = sequelize.define('ArticlesComments', {
 		articleId: {
@@ -15,13 +14,19 @@ module.exports = (sequelize, DataTypes) => {
 			references: {
 				model: 'Comments',
 				key: 'id',
-			}
-		}
+			},
+		},
 	}, {});
 
-	ArticlesComments.associate = function(models) {
-		models.ArticlesComments.belongsTo(models.Comment, { as: 'comment', foreignKey: 'commentId' });
-		models.ArticlesComments.belongsTo(models.Article, { as: 'article', foreignKey: 'articleId' })
+	ArticlesComments.associate = function (models) {
+		models.ArticlesComments.belongsTo(models.Comment, {
+			as: 'comment',
+			foreignKey: 'commentId',
+		});
+		models.ArticlesComments.belongsTo(models.Article, {
+			as: 'article',
+			foreignKey: 'articleId',
+		});
 	};
 	return ArticlesComments;
 };

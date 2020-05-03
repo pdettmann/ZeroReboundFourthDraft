@@ -1,4 +1,3 @@
-'use strict';
 module.exports = (sequelize, DataTypes) => {
 	const UserVersion = sequelize.define('UserVersion', {
 		userId: {
@@ -8,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
 			references: {
 				model: 'Users',
 				key: 'id',
-			}
+			},
 		},
 		firstName: {
 			type: DataTypes.STRING,
@@ -29,12 +28,14 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.STRING,
 			allowNull: true,
 			primaryKey: true,
-		}
-
+		},
 	}, {});
-	UserVersion.associate = function(models) {
-		models.UserVersion.belongsTo(models.User, {foreignKey: 'userId' });
 
+	UserVersion.associate = function (models) {
+		models.UserVersion.belongsTo(models.User, {
+			foreignKey: 'userId',
+		});
 	};
+
 	return UserVersion;
 };

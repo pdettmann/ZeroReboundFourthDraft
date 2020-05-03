@@ -15,7 +15,6 @@ function Signin () {
         apiClient.get('/user/profile')
         .then((res) => {
             setUser(res.data.user);
-            setRedirectUrl('/profile');
         })
         .catch((error) => {
             console.log(error);
@@ -37,6 +36,10 @@ function Signin () {
 
     if (redirectUrl) {
         return <Redirect to={redirectUrl} />
+    }
+
+    if (user) {
+        return <Redirect to='/profile' />
     }
 
     if (loading) {

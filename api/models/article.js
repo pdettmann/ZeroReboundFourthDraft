@@ -1,4 +1,3 @@
-'use strict';
 module.exports = (sequelize, DataTypes) => {
 	const Article = sequelize.define('Article', {
 		title: {
@@ -6,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
 			allowNull: false,
 			validate: {
 				notNull: true,
-			}
+			},
 		},
 		userId: {
 			type: DataTypes.INTEGER,
@@ -14,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
 			references: {
 				model: 'Users',
 				key: 'id',
-				as: 'author'
+				as: 'author',
 			},
 		},
 		text: {
@@ -22,15 +21,26 @@ module.exports = (sequelize, DataTypes) => {
 			allowNull: false,
 			validate: {
 				notNull: true,
-			}
-		}
-
+			},
+		},
 	}, {});
 
-	Article.associate = function(models) {
-		models.Article.belongsTo(models.User, { as: 'author', foreignKey: 'userId' })
-		models.Article.hasMany(models.ArticlesComments, { as: 'articles' ,foreignKey: 'articleId', onDelete: 'cascade', hooks: true });
-		models.Article.hasMany(models.ArticleVersion, {foreignKey: 'articleId', onDelete: 'cascade', hooks: true });
+	Article.associate = function (models) {
+		models.Article.belongsTo(models.User, {
+			as: 'author',
+			foreignKey: 'userId',
+		});
+		models.Article.hasMany(models.ArticlesComments, {
+			as: 'articles',
+			foreignKey: 'articleId',
+			onDelete: 'cascade',
+			hooks: true,
+		});
+		models.Article.hasMany(models.ArticleVersion, {
+			foreignKey: 'articleId',
+			onDelete: 'cascade',
+			hooks: true,
+		});
 	};
 	return Article;
 };

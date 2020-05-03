@@ -1,40 +1,49 @@
-import React, {useState} from "react";
+import React, {useState, useContext} from "react";
 import apiClient from './apiClient';
 import { Redirect } from 'react-router-dom';
-
+import { UserContext } from './userContext';
 
 function Signup () {
-
     const [email, setEmail] = useState();
     const [firstName, setFirstName] = useState();
     const [lastName, setLastName] = useState();
     const [password, setPassword] = useState();
     const [passwordTwo, setPasswordTwo] = useState();
     const [redirectUrl, setRedirectUrl] = useState();
+    const [error, setError] = useState();
+    const [user, setUser] = useContext(UserContext);
 
-    if (redirectUrl) {
-        return <Redirect to={redirectUrl} />
-    }
+    console.log(user);
 
     const performSignup = () => {
         if (password === passwordTwo) {
             apiClient.post('/user/create', {firstName, lastName, email, password})
-            .then( (res) => {
-                console.log(res);
-                console.log(res.data);
-                setRedirectUrl('/profile');
-
+            .then((res) => {
+                setUser(res.data.user);
             })
             .catch((err) => {
                 console.log(err);
+                setError('Something went wrong')
             });
         } else {
-            console.log('Passwords do not match');
-            alert('Passwords do not match, please try again')
-            setRedirectUrl('/signup')
+            setError('Passwords do not match, please try again');
         }
-
     };
+
+    if (redirectUrl) {
+        return <Redirect to={redirectUrl} />
+    };
+
+    if (user) {
+        return <Redirect to="/profile" />
+    };
+
+    if (error) {
+        alert(error);
+        setError(undefined);
+    }
+
+
 
     return (
         <div className='signup'>

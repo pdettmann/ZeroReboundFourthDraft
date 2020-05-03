@@ -23,7 +23,7 @@ function Profile () {
             })
             .catch((err) => {
                 console.log(err);
-                setRedirectUrl("/createArticle");
+                setError('Something went wrong, could not retreive articles');
             });
         })
         .catch((err) => {
@@ -60,7 +60,7 @@ function Profile () {
         apiClient.delete(`/article/deleteArticle?articleId=${articleId}`)
         .then((res) => {
             const newArticles = articles.filter((article) => {
-                return article.id != articleId;
+                return article.id !== articleId;
             });
 
             setArticles(newArticles);

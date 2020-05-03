@@ -1,7 +1,6 @@
 import React, {useState, useContext} from "react";
 import apiClient from './apiClient';
 import { Redirect } from 'react-router-dom';
-import { UserContext } from './userContext';
 
 function CreateArticle () {
 
@@ -9,11 +8,6 @@ function CreateArticle () {
     const [text, setText] = useState();
     const [redirectUrl, setRedirectUrl] = useState();
     const [error, setError] = useState();
-    const [user, setUser] = useContext(UserContext);
-
-    if (redirectUrl) {
-        return <Redirect to={redirectUrl} />
-    };
 
     const performCreateArticle = () => {
         apiClient.post('/article/create', {title, text})
@@ -27,14 +21,14 @@ function CreateArticle () {
             });
     };
 
+    if (redirectUrl) {
+        return <Redirect to={redirectUrl} />
+    };
+
     if (error) {
         alert(error);
         setError(undefined);
-    }
-
-    if (!user) {
-        setRedirectUrl('/signin');
-    }
+    };
 
     return (
         <div>

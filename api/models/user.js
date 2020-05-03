@@ -1,4 +1,3 @@
-'use strict';
 module.exports = (sequelize, DataTypes) => {
 	const User = sequelize.define('User', {
 		firstName: {
@@ -6,14 +5,14 @@ module.exports = (sequelize, DataTypes) => {
 			allowNull: false,
 			validate: {
 				notNull: true,
-			}
+			},
 		},
 		lastName: {
 			type: DataTypes.STRING,
 			allowNull: false,
 			validate: {
 				notNull: true,
-			}
+			},
 		},
 		email: {
 			type: DataTypes.STRING,
@@ -21,21 +20,33 @@ module.exports = (sequelize, DataTypes) => {
 			validate: {
 				notNull: true,
 				isEmail: true,
-			}
+			},
 		},
 		hashedPassword: {
 			type: DataTypes.STRING(128),
 			allowNull: false,
 			validate: {
 				notNull: true,
-			}
+			},
 		},
 	}, {});
 
-	User.associate = function(models) {
-		models.User.hasMany(models.Article, { as: 'articles', foreignKey: 'userId', onDelete: 'cascade', hooks: true});
-		models.User.hasMany(models.Comment, { as: 'comments', foreignKey: 'userId', onDelete: 'cascade', hooks: true });
-		models.User.hasMany(models.UserVersion, {foreignKey: 'userId' });
+	User.associate = function (models) {
+		models.User.hasMany(models.Article, {
+			as: 'articles',
+			foreignKey: 'userId',
+			onDelete: 'cascade',
+			hooks: true,
+		});
+		models.User.hasMany(models.Comment, {
+			as: 'comments',
+			foreignKey: 'userId',
+			onDelete: 'cascade',
+			hooks: true,
+		});
+		models.User.hasMany(models.UserVersion, {
+			foreignKey: 'userId',
+		});
 	};
 
 	return User;
