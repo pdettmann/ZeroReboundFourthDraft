@@ -1,42 +1,43 @@
-const axios = require('axios');
-const app = require('../src/app');
+// const axios = require('axios');
+// const app = require('../src/app');
 
-const PORT = 8082;
-const client = axios.create({
-	baseURL: `http://localhost:${PORT}`,
-	withCredentials: true,
-});
+// const PORT = 8082;
+// const client = axios.create({
+// 	baseURL: `http://localhost:${PORT}`,
+// 	withCredentials: true,
+// });
 
-let server;
+// let server;
 
-beforeAll(async () => {
-	server = app.listen(PORT);
+// beforeAll(async () => {
+// 	server = app.listen(PORT);
 
-	const data = {
-		firstName: 'Anakin',
-		lastName: 'Skywalker',
-		email: 'anakin@skywalker.com',
-		password: 'maytheforcebewithyou',
-	};
+// 	const data = {
+// 		firstName: 'Anakin',
+// 		lastName: 'Skywalker',
+// 		email: 'anakin@skywalker.com',
+// 		password: 'maytheforcebewithyou',
+// 	};
 
-	await client.post('/user/create', data);
-});
+// 	await client.post('/user/create', data);
+// });
 
-afterAll(() => {
-	server.close();
-});
+// afterAll(() => {
+// 	server.close();
+// });
 
-test('creates comment', async () => {
-	const data = {
-		text: 'comment',
-	};
+// test('creates comment', async () => {
+// 	const data = {
+// 		text: 'comment',
+// 		articleId: 1,
+// 	};
 
-	const result = await client.post('/comment/create', data);
+// 	const result = await client.post('/comment/create', data);
 
-	const { comment } = result.data;
+// 	const { comment } = result.data;
 
-	expect(comment.text).toBe(data.text);
-});
+// 	expect(comment.text).toBe(data.text);
+// });
 
 // test('finds comment', async () => {
 // 	const data = {
@@ -57,3 +58,4 @@ test('creates comment', async () => {
 // 	expect(comment.commenter.lastName).toBe(data.commenter.lastName);
 // 	expect(comment.avatarUrl).toBe(data.avatarUrl);
 // });
+

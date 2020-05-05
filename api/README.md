@@ -1,29 +1,27 @@
-ZeroRebound api
-========
+ZeroRebound API
+===============
 
-A REST API to the ZeroRebound website that retrieves and sends users, articles and comments to and from the backend.
+A Restful API for the ZeroRebound website that retrieves and sends users, articles and comments to and from the backend.
+
+What it can do:
+- fetch articles, users and comments from the database,
+- post articles, users and comments to the database,
+- retrieve a user avatar using the gravatarurl api,
+- authenticate existing users,
+- delete articles, users and comments from the database.
 
 Getting Started
---------
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+---------------
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-Prerequisites
--------------
-install node.js
+# install dev dependencies
+npm install -D
 
-Installing
-----------
-
-# install dependencies
-npm install
-
-# run project
+# run the app
 npm start
+
+Testing
+-------
 
 # run all tests
 npm test
-
-Prerequisites Tests
--------------------
-install jest
-
