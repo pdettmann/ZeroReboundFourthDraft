@@ -45,7 +45,6 @@ function Article (props) {
         })
         .catch((err) => {
             console.log(err);
-            setError("Something went wrong")
         });
     }, []);
 

@@ -3,7 +3,7 @@ import apiClient from './apiClient';
 import { Redirect } from 'react-router-dom';
 import { UserContext } from './userContext';
 
-function Signup () {
+const Signup = () => {
     const [email, setEmail] = useState();
     const [firstName, setFirstName] = useState();
     const [lastName, setLastName] = useState();

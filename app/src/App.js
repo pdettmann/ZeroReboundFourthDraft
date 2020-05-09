@@ -9,9 +9,10 @@ import CreateArticle from './createArticle';
 import Home from './home';
 import { UserProvider } from './userContext';
 
-function App() {
+const App = () => {
   return (
     <UserProvider>
+      <h1>title</h1>
       <Router>
         <Switch>
           <Route exact path="/signup" component={Signup} />
