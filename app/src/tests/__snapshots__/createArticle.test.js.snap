@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`component renders correctly 1`] = `
+<div>
+  <h1>
+    Create an Article
+  </h1>
+  <label>
+    Title
+    <input
+      id="title"
+      name="title"
+      onChange={[Function]}
+      type="text"
+    />
+  </label>
+  <br />
+  <label>
+    Text
+    <input
+      id="text"
+      name="text"
+      onChange={[Function]}
+      type="text"
+    />
+  </label>
+  <br />
+  <button
+    onClick={[Function]}
+    type="submit"
+  >
+     Create 
+  </button>
+  <br />
+</div>
+`;

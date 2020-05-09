@@ -1,5 +1,5 @@
 import React from 'react';
-import Signup from '../signup';
+import CreateArticle from '../createArticle';
 import renderer from 'react-test-renderer';
 import { unmountComponentAtNode } from "react-dom";
 import { UserProvider } from '../userContext';
@@ -21,7 +21,7 @@ afterEach(() => {
 test('component renders correctly', () => {
     const component = renderer.create(
         <UserProvider>
-            <Signup />
+            <CreateArticle />
         </UserProvider>
       );
       let tree = component.toJSON();

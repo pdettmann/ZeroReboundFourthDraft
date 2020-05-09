@@ -1,0 +1,65 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`component renders correctly 1`] = `
+<div
+  className="signup"
+>
+  <label>
+    First name:
+    <input
+      id="fname"
+      name="fname"
+      onChange={[Function]}
+      type="text"
+    />
+  </label>
+  <br />
+  <label>
+    Last name:
+    <input
+      id="lname"
+      name="lname"
+      onChange={[Function]}
+      type="text"
+    />
+  </label>
+  <br />
+  <label>
+    Email:
+    <input
+      id="email"
+      name="email"
+      onChange={[Function]}
+      type="text"
+    />
+  </label>
+  <br />
+  <label>
+    Password:
+    <input
+      id="password"
+      name="password"
+      onChange={[Function]}
+      type="password"
+    />
+  </label>
+  <br />
+  <label>
+    Repeat password:
+    <input
+      id="passwordTwo"
+      name="passwordTwo"
+      onChange={[Function]}
+      type="password"
+    />
+  </label>
+  <br />
+  <button
+    onClick={[Function]}
+    type="submit"
+  >
+     Submit 
+  </button>
+  <br />
+</div>
+`;

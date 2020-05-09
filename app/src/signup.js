@@ -13,8 +13,6 @@ const Signup = () => {
     const [error, setError] = useState();
     const [user, setUser] = useContext(UserContext);
 
-    console.log(user);
-
     const performSignup = () => {
         if (password === passwordTwo) {
             apiClient.post('/user/create', {firstName, lastName, email, password})
