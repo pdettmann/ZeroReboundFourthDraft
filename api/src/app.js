@@ -17,7 +17,7 @@ const pgPool = new pg.Pool({
 const app = express();
 
 app.use(cors({
-	origin: process.env.ZR_PRODUCTION === 'true' ? 'https://zerorebound-d3dd9.web.app' : 'http://localhost:3000',
+	origin: process.env.ZR_PRODUCTION === 'true' ? 'https://zerorebound.com' : 'http://localhost:3000',
 	credentials: true,
 }));
 
