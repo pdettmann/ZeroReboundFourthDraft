@@ -17,7 +17,7 @@ const pgPool = new pg.Pool({
 const app = express();
 
 app.use(cors({
-	origin: 'http://localhost:3000',
+	origin: process.env.ZR_PRODUCTION === 'true' ? 'http://ec2-18-184-23-43.eu-central-1.compute.amazonaws.com' : 'http://localhost:3000',
 	credentials: true,
 }));
 

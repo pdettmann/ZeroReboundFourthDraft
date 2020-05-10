@@ -4,6 +4,7 @@ const {
 	ZR_DB_NAME,
 	ZR_DB_HOST,
 	NODE_ENV,
+	ZR_PRODUCTION,
 } = process.env;
 
 module.exports = {
