@@ -81,8 +81,8 @@ function Article (props) {
             <div>
                 <button onClick={() => setRedirectUrl('/home')}>Home</button>
                 <input type="text" id='searchBar' placeholder='Search...' /><br></br><br></br>
-                    {article.title}<br></br><br></br>
-                    {article.text}<br></br><br></br>
+                <h1>{article.title}</h1><br></br><br></br>
+                <h3>{article.text}</h3><br></br><br></br>
                 <input type="text" value={text} id="comment" name="comment" placeholder="comment" onChange={(event) => setText(event.target.value)}/>
                 <button type='submit' onClick={() => performCreateComment()}> Comment </button><br></br>
             </div>
@@ -91,21 +91,24 @@ function Article (props) {
         return (
             <div>
                 <button onClick={() => setRedirectUrl('/home')}>Home</button>
-                <input type="text" id='searchBar' placeholder='Search...' /><br></br><br></br>
-                {article.title}<br></br><br></br>
-                {article.text}<br></br><br></br>
-                <input type="text"  value={text} id="comment" name="comment" placeholder="comment" onChange={(event) => setText(event.target.value)}/>
+                <button onClick={() => setRedirectUrl('/profile')}>Profile</button>
+                <input type="text" class='searchBar' placeholder='Search...' /><br></br><br></br>
+                <h1>{article.title}</h1><br></br><br></br>
+                <p>{article.text}</p><br></br><br></br>
+                <input type="text"  value={text} class="inputComment" placeholder="Comment here..." onChange={(event) => setText(event.target.value)}/>
                 <button type='submit' onClick={() => performCreateComment()}> Comment </button><br></br>
                 <div><br></br>
                 {comments.map((comment) => {
                     return  (
-                        <div key={comment.id}>
-                            <img src={comment.avatarUrl} alt='avatar'></img>
+                        <div key={comment.id} class='commentBox'>
+                            <img src={comment.avatarUrl} alt='avatar' height="50pt" width="50pt"></img>
                             <h3>{comment.commenter.firstName} {comment.commenter.lastName}</h3>
                             <p>{comment.text}</p>
-                            {comment.isCommenter && (
+                            <div class="deleteCommentBox">
+                                {comment.isCommenter && (
                                 <button onClick = {() => deleteCommentFunction(comment.id)}>deleteComment</button>
-                            )}
+                                )}
+                            </div>
                         </div>
                     )
                 })}

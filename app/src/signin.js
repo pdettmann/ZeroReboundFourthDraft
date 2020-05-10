@@ -53,17 +53,10 @@ function Signin () {
 
     return (
         <div className='signin'>
-            <label>Email
-                <input
-                    type="text"
-                    id="email"
-                    name="email"
-                    onChange={(event)=> setEmail(event.target.value)}
-                />
-            </label><br></br>
-            <label>Password
-                <input type="password" id="password" name="password"  onChange={(event)=> setPassword(event.target.value)}/>
-            </label><br></br>
+            <h3>ZeroRebound</h3>
+            <h1>Sign in</h1>
+            <input type="text" class="signinEmail" placeholder='Email' onChange={(event)=> setEmail(event.target.value)}/><br></br>
+            <input type="password" class="signinPassword" placeholder='Password'  onChange={(event)=> setPassword(event.target.value)}/><br></br>
             <button type='submit' onClick={() => performSignin()}> Submit </button><br></br>
             <button type='signup' onClick={() => setRedirectUrl('/signup')}>Register </button><br></br>
         </div>

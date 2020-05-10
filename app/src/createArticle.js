@@ -32,13 +32,11 @@ function CreateArticle () {
 
     return (
         <div>
+            <button onClick={() => setRedirectUrl('/home')}>Home</button>
+            <button onClick={() => setRedirectUrl('/profile')}>Profile</button>
             <h1>Create an Article</h1>
-            <label>Title
-                <input type="text" id="title" name="title" onChange={(event)=> setTitle(event.target.value)}/>
-            </label><br></br>
-            <label>Text
-                <input type="text" id="text" name="text" onChange={(event)=> setText(event.target.value)}/>
-            </label><br></br>
+            <input placeholder='Title' type="text" class="titleCreateArticle" onChange={(event)=> setTitle(event.target.value)}/><br></br>
+            <textarea placeholder='Copy or write your article text here...' type="text" class="textCreateArticle" onChange={(event)=> setText(event.target.value)}/><br></br>
             <button type='submit' onClick={() => performCreateArticle()}> Create </button><br></br>
         </div>
     )

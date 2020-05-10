@@ -94,9 +94,9 @@ function Profile () {
             <button onClick={() => logoutFunction()}>Logout</button><br></br>
             <button onClick={() => deleteUserFunction()}>Delete account</button><br></br>
             <h1>Welcome {user.firstName} </h1>
-            <h2> Name: {user.firstName} {user.lastName}</h2>
-            <h2> Email: {user.email}</h2>
-            <img src={user.avatarUrl} alt="profile" height="70pt" width="70pt"></img>
+            <img src={user.avatarUrl} alt="profile" height="100pt" width="100pt" float="none" ></img><br></br><br></br>
+            <h3> Name: {user.firstName} {user.lastName}</h3>
+            <h3> Email: {user.email}</h3>
             <button type='createArticle' onClick={() => setRedirectUrl('/createArticle')}>Create an Article </button><br></br>
             <div>
             {articles.map((article) => {

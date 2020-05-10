@@ -30,14 +30,14 @@ function Home () {
             <div>
                 {articles.map((article) => {
                     return  (
-                        <div key={article.id}>
+                        <div key={article.id} class='homeArticleDiv'>
                             <a href={`/article/${article.id}`}>
                                 <div>
-                                    <h1>{article.title}</h1>
+                                    <h2>{article.title}</h2>
                                 </div>
                             </a>
                             <h3>{article.author.firstName}{article.author.lastName}</h3>
-                            <h2>{article.text}</h2>
+                            <h3>{article.text}</h3>
                         </div>
                     )
                 })}

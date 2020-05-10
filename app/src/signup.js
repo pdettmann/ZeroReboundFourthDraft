@@ -45,21 +45,14 @@ const Signup = () => {
 
     return (
         <div className='signup'>
-            <label>First name:
-                <input type="text" id="fname" name="fname" onChange={(event)=> setFirstName(event.target.value)}/>
-            </label><br></br>
-            <label>Last name:
-                <input type="text" id="lname" name="lname" onChange={(event)=> setLastName(event.target.value)}/>
-            </label><br></br>
-            <label>Email:
-                <input type="text" id="email" name="email" onChange={(event)=> setEmail(event.target.value)}/>
-            </label><br></br>
-            <label>Password:
-                <input type="password" id="password" name="password" onChange={(event)=> setPassword(event.target.value)}/>
-            </label><br></br>
-            <label>Repeat password:
-                <input type="password" id="passwordTwo" name="passwordTwo" onChange={(event)=> setPasswordTwo(event.target.value)}></input>
-            </label><br></br>
+            <button onClick={() => setRedirectUrl('/signin')}>Sign in</button>
+            <h3>ZeroRebound</h3>
+            <h1>Register</h1>
+            <input type="text" id="fname" placeholder='First Name' onChange={(event)=> setFirstName(event.target.value)}/><br></br>
+            <input type="text" id="lname"  placeholder='Last Name' onChange={(event)=> setLastName(event.target.value)}/><br></br>
+            <input type="text" id="email"  placeholder='Email' onChange={(event)=> setEmail(event.target.value)}/><br></br>
+            <input type="password" id="password" placeholder="Password" onChange={(event)=> setPassword(event.target.value)}/><br></br>
+            <input type="password" id="passwordTwo" placeholder="Repeat Password" onChange={(event)=> setPasswordTwo(event.target.value)}></input><br></br>
             <button type='submit' onClick={() => performSignup()}> Submit </button><br></br>
         </div>
     );
