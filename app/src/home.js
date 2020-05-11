@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import apiClient from './apiClient';
 import { Redirect } from 'react-router-dom';
 
-function Home () {
+function Home (props) {
     const [articles, setArticles] = useState([]);
     const [redirectUrl, setRedirectUrl] = useState();
+    const { apiClient } = props;
 
     useEffect(() => {
         apiClient.get('/article/home')
@@ -20,9 +20,6 @@ function Home () {
         return <Redirect to={redirectUrl} />
     }
 
-    // if (user is logged in ) {
-
-    // }
     return (
         <div>
             <button onClick={() => setRedirectUrl('/profile')}>Profile</button>
@@ -30,7 +27,7 @@ function Home () {
             <div>
                 {articles.map((article) => {
                     return  (
-                        <div key={article.id} class='homeArticleDiv'>
+                        <div key={article.id} className='homeArticleDiv'>
                             <a href={`/article/${article.id}`}>
                                 <div>
                                     <h2>{article.title}</h2>
