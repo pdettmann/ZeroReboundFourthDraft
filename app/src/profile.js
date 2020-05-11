@@ -1,22 +1,19 @@
 import React, { useState, useEffect, useContext } from "react";
-import apiClient from './apiClient';
 import { Redirect } from 'react-router-dom';
 import { UserContext } from './userContext';
 
-function Profile () {
+const Profile = (props) => {
     const [articles, setArticles] = useState();
     const [redirectUrl, setRedirectUrl] = useState();
     const [error, setError] = useState();
     const [user, setUser] = useContext(UserContext);
-
-    console.log(user);
+    const { apiClient } = props;
 
     // TODO: use async await
     useEffect(() => {
         apiClient.get('/user/profile')
         .then((res) => {
             setUser(res.data.user);
-
             apiClient.get('/user/articles')
             .then((res) => {
                 setArticles(res.data.articles);
@@ -93,10 +90,10 @@ function Profile () {
             <button onClick={() => setRedirectUrl('/home')}>Home</button>
             <button onClick={() => logoutFunction()}>Logout</button><br></br>
             <button onClick={() => deleteUserFunction()}>Delete account</button><br></br>
-            <h1>Welcome {user.firstName} </h1>
+            <h1>Welcome {user.firstName}</h1>
             <img src={user.avatarUrl} alt="profile" height="100pt" width="100pt" float="none" ></img><br></br><br></br>
-            <h3> Name: {user.firstName} {user.lastName}</h3>
-            <h3> Email: {user.email}</h3>
+            <h3>Name: {user.firstName} {user.lastName}</h3>
+            <h3>Email: {user.email}</h3>
             <button type='createArticle' onClick={() => setRedirectUrl('/createArticle')}>Create an Article </button><br></br>
             <div>
             {articles.map((article) => {

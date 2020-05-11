@@ -36,7 +36,7 @@ function Home () {
                                     <h2>{article.title}</h2>
                                 </div>
                             </a>
-                            <h3>{article.author.firstName}{article.author.lastName}</h3>
+                            <h3>{article.author.firstName} {article.author.lastName}</h3>
                             <h3>{article.text}</h3>
                         </div>
                     )

@@ -18,13 +18,13 @@ afterEach(() => {
   container = null;
 });
 
-test('component renders correctly', () => {
-    const component = renderer.create(
-        <UserProvider>
-            <Signup />
-        </UserProvider>
-      );
-      let tree = component.toJSON();
-      expect(tree).toMatchSnapshot();
+test('Signup renders correctly', () => {
+  const component = renderer.create(
+    <UserProvider>
+        <Signup />
+    </UserProvider>
+  );
+  let tree = component.toJSON();
+  expect(tree).toMatchSnapshot();
 
 });

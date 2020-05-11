@@ -20,7 +20,7 @@ afterEach(() => {
 describe("App test", () => {
     test('does it work', () => {
         const { getByText } = render(<App />);
-        const element = getByText('title');
+        const element = getByText('ZeroRebound');
         expect(element).toBeInTheDocument();
     })
 })

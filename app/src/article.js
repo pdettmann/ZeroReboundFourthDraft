@@ -1,8 +1,7 @@
 import React, {useState, useEffect} from "react";
-import apiClient from './apiClient';
 import { Redirect } from 'react-router-dom';
 
-function Article (props) {
+const Article = (props) => {
     const articleId = props.match.params.id;
 
     const [article, setArticle] = useState();
@@ -10,6 +9,7 @@ function Article (props) {
     const [text, setText] = useState();
     const [comments, setComments] = useState([]);
     const [error, setError] = useState();
+    const { apiClient } = props;
 
     const performCreateComment = () => {
         apiClient.post('/comment/create', {
@@ -92,19 +92,21 @@ function Article (props) {
             <div>
                 <button onClick={() => setRedirectUrl('/home')}>Home</button>
                 <button onClick={() => setRedirectUrl('/profile')}>Profile</button>
-                <input type="text" class='searchBar' placeholder='Search...' /><br></br><br></br>
-                <h1>{article.title}</h1><br></br><br></br>
+                <input type="text" className='searchBar' placeholder='Search...' /><br></br><br></br>
+                <input type="text" className='searchBar' placeholder='Search...' /><br></br><br></br>
+                <h1>{article.title}</h1><br></br>
+                <h3>By {article.author.firstName} {article.author.lastName}</h3><br></br>
                 <p>{article.text}</p><br></br><br></br>
-                <input type="text"  value={text} class="inputComment" placeholder="Comment here..." onChange={(event) => setText(event.target.value)}/>
+                <input type="text"  value={text} className="inputComment" placeholder="Comment here..." onChange={(event) => setText(event.target.value)}/>
                 <button type='submit' onClick={() => performCreateComment()}> Comment </button><br></br>
                 <div><br></br>
                 {comments.map((comment) => {
                     return  (
-                        <div key={comment.id} class='commentBox'>
+                        <div key={comment.id} className='commentBox'>
                             <img src={comment.avatarUrl} alt='avatar' height="50pt" width="50pt"></img>
                             <h3>{comment.commenter.firstName} {comment.commenter.lastName}</h3>
                             <p>{comment.text}</p>
-                            <div class="deleteCommentBox">
+                            <div className="deleteCommentBox">
                                 {comment.isCommenter && (
                                 <button onClick = {() => deleteCommentFunction(comment.id)}>deleteComment</button>
                                 )}

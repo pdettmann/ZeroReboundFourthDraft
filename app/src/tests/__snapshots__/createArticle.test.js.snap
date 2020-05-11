@@ -1,29 +1,33 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`component renders correctly 1`] = `
+exports[`CreateArticle renders correctly 1`] = `
 <div>
+  <button
+    onClick={[Function]}
+  >
+    Home
+  </button>
+  <button
+    onClick={[Function]}
+  >
+    Profile
+  </button>
   <h1>
     Create an Article
   </h1>
-  <label>
-    Title
-    <input
-      id="title"
-      name="title"
-      onChange={[Function]}
-      type="text"
-    />
-  </label>
+  <input
+    class="titleCreateArticle"
+    onChange={[Function]}
+    placeholder="Title"
+    type="text"
+  />
   <br />
-  <label>
-    Text
-    <input
-      id="text"
-      name="text"
-      onChange={[Function]}
-      type="text"
-    />
-  </label>
+  <textarea
+    class="textCreateArticle"
+    onChange={[Function]}
+    placeholder="Copy or write your article text here..."
+    type="text"
+  />
   <br />
   <button
     onClick={[Function]}

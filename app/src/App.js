@@ -8,18 +8,19 @@ import Article from './article.js';
 import CreateArticle from './createArticle';
 import Home from './home';
 import { UserProvider } from './userContext';
+import apiClient from './apiClient';
 
 const App = () => {
   return (
     <UserProvider>
       <Router>
         <Switch>
-          <Route exact path="/signup" component={Signup} />
-          <Route exact path="/profile" component={Profile} />
-          <Route exact path="/signin" component={Signin} />
-          <Route exact path="/createArticle" component={CreateArticle} />
-          <Route path="/article/:id" component={Article} />
-          <Route exact path="/home" component={Home} />
+          <Route exact path="/signup" component={() => <Signup apiClient={apiClient}/>} />
+          <Route exact path="/profile" component={() => <Profile apiClient={apiClient}/>} />
+          <Route exact path="/signin" component={() => <Signin apiClient={apiClient}/>} />
+          <Route exact path="/createArticle" component={() => <CreateArticle apiClient={apiClient}/>} />
+          <Route path="/article/:id" component={(props) => <Article {...props} apiClient={apiClient} />} />
+          <Route exact path="/home" component={() => <Home apiClient={apiClient}/>} />
           <Route path="/" component={() => <Redirect to="/home" />} />
         </Switch>
       </Router>

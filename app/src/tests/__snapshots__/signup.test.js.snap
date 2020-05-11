@@ -1,58 +1,54 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`component renders correctly 1`] = `
+exports[`Signup renders correctly 1`] = `
 <div
   className="signup"
 >
-  <label>
-    First name:
-    <input
-      id="fname"
-      name="fname"
-      onChange={[Function]}
-      type="text"
-    />
-  </label>
+  <button
+    onClick={[Function]}
+  >
+    Sign in
+  </button>
+  <h3>
+    ZeroRebound
+  </h3>
+  <h1>
+    Register
+  </h1>
+  <input
+    id="fname"
+    onChange={[Function]}
+    placeholder="First Name"
+    type="text"
+  />
   <br />
-  <label>
-    Last name:
-    <input
-      id="lname"
-      name="lname"
-      onChange={[Function]}
-      type="text"
-    />
-  </label>
+  <input
+    id="lname"
+    onChange={[Function]}
+    placeholder="Last Name"
+    type="text"
+  />
   <br />
-  <label>
-    Email:
-    <input
-      id="email"
-      name="email"
-      onChange={[Function]}
-      type="text"
-    />
-  </label>
+  <input
+    id="email"
+    onChange={[Function]}
+    placeholder="Email"
+    type="text"
+  />
   <br />
-  <label>
-    Password:
-    <input
-      id="password"
-      name="password"
-      onChange={[Function]}
-      type="password"
-    />
-  </label>
+  <input
+    id="password"
+    onChange={[Function]}
+    placeholder="Password"
+    type="password"
+  />
   <br />
-  <label>
-    Repeat password:
-    <input
-      id="passwordTwo"
-      name="passwordTwo"
-      onChange={[Function]}
-      type="password"
-    />
-  </label>
+  <input
+    id="passwordTwo"
+    onChange={[Function]}
+    placeholder="Repeat Password"
+    type="password"
+  />
   <br />
   <button
     onClick={[Function]}

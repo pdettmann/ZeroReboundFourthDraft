@@ -1,9 +1,8 @@
 import React, {useState, useContext} from "react";
-import apiClient from './apiClient';
 import { Redirect } from 'react-router-dom';
 import { UserContext } from './userContext';
 
-const Signup = () => {
+const Signup = (props) => {
     const [email, setEmail] = useState();
     const [firstName, setFirstName] = useState();
     const [lastName, setLastName] = useState();
@@ -12,6 +11,7 @@ const Signup = () => {
     const [redirectUrl, setRedirectUrl] = useState();
     const [error, setError] = useState();
     const [user, setUser] = useContext(UserContext);
+    const { apiClient } = props;
 
     const performSignup = () => {
         if (password === passwordTwo) {

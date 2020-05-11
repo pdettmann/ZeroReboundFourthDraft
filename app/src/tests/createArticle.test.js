@@ -18,7 +18,7 @@ afterEach(() => {
   container = null;
 });
 
-test('component renders correctly', () => {
+test('CreateArticle renders correctly', () => {
     const component = renderer.create(
         <UserProvider>
             <CreateArticle />

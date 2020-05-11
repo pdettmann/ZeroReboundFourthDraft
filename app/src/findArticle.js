@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from "react";
-import apiClient from './apiClient';
 import { Redirect } from 'react-router-dom';
 
-function FindArticle () {
+const FindArticle = (props) => {
 
     const [articles, setArticles] = useState();
     const [redirectUrl, setRedirectUrl] = useState();
+    const { apiClient } = props;
 
     useEffect(() => {
         apiClient.get('/user/articles')

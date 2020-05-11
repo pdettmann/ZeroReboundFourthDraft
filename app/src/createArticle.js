@@ -1,13 +1,13 @@
 import React, {useState, useContext} from "react";
-import apiClient from './apiClient';
 import { Redirect } from 'react-router-dom';
 
-function CreateArticle () {
+const CreateArticle = (props) => {
 
     const [title, setTitle] = useState();
     const [text, setText] = useState();
     const [redirectUrl, setRedirectUrl] = useState();
     const [error, setError] = useState();
+    const { apiClient } = props;
 
     const performCreateArticle = () => {
         apiClient.post('/article/create', {title, text})

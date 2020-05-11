@@ -1,15 +1,15 @@
 import React, {useState, useContext, useEffect} from "react";
-import apiClient from './apiClient';
 import { Redirect } from 'react-router-dom';
 import { UserContext } from './userContext';
 
-function Signin () {
+const Signin = (props) => {
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
     const [redirectUrl, setRedirectUrl] = useState();
     const [error, setError] = useState();
     const [user, setUser] = useContext(UserContext);
     const [loading, setLoading] = useState(true);
+    const { apiClient } = props;
 
     useEffect(() => {
         apiClient.get('/user/profile')
@@ -17,7 +17,6 @@ function Signin () {
             setUser(res.data.user);
         })
         .catch((error) => {
-            console.log(error);
             setLoading(false);
         });
     }, []);
@@ -29,7 +28,6 @@ function Signin () {
                 setRedirectUrl('/profile');
             })
             .catch((error) => {
-                console.log(error);
                 setError('invalid login');
             });
     }
@@ -55,8 +53,8 @@ function Signin () {
         <div className='signin'>
             <h3>ZeroRebound</h3>
             <h1>Sign in</h1>
-            <input type="text" class="signinEmail" placeholder='Email' onChange={(event)=> setEmail(event.target.value)}/><br></br>
-            <input type="password" class="signinPassword" placeholder='Password'  onChange={(event)=> setPassword(event.target.value)}/><br></br>
+            <input type="text" className="signinEmail" placeholder='Email' onChange={(event)=> setEmail(event.target.value)}/><br></br>
+            <input type="password" className="signinPassword" placeholder='Password'  onChange={(event)=> setPassword(event.target.value)}/><br></br>
             <button type='submit' onClick={() => performSignin()}> Submit </button><br></br>
             <button type='signup' onClick={() => setRedirectUrl('/signup')}>Register </button><br></br>
         </div>
