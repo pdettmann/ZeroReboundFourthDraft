@@ -46,53 +46,10 @@ router.post('/create', auth.requireUserLogin, (req, res) => {
 			});
 		})
 		.catch((error) => {
-			res.status(400);
+			res.status(408);
 			res.send({ error });
 		});
 });
-
-// router.get('/findByText', auth.requireUserLogin, (req, res) => {
-//     const text = req.query.text;
-
-//     if (!text) {
-//         res.status(404);
-//         return res.send({ error: 'Missing parameters' });
-//     }
-
-//     Comment.findAll({
-//         where: {
-//             text: {
-//                 [Sequelize.Op.iLike]: text,
-//             },
-//         },
-//         attributes: ['text'],
-//         include: [{
-// 			model: User,
-// 			as: 'commenter',
-// 			attributes: ['firstName', 'lastName', 'email']
-// 			}]
-//     })
-//     .then((comments) => {
-//         if (comments.length === 0) {
-//             res.status(404);
-//             res.send({
-//                 error: 'No comments were found.'
-//             });
-//         } else {
-//             comments.forEach((comment) => {
-//                 comment.commenter.dataValues.avatarUrl = getGravatarUrl(comment.commenter.email);
-//             });
-
-//             res.send({
-//                 comments
-//             });
-//         }
-//     })
-//     .catch((err) => {
-//         res.status(400);
-//         res.send(err);
-//     })
-// });
 
 router.get('/findByArticleId', auth.requireUserLogin, (req, res) => {
 	const { articleId } = req.query;

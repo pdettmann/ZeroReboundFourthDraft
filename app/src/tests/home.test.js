@@ -35,7 +35,7 @@ it("renders home", async () => {
             if (path === '/article/home') {
                 return Promise.resolve({
                     data: {
-                        articles: [{ fakeArticle }]
+                        articles: [ fakeArticle ]
                     }
                 });
             }
@@ -56,7 +56,8 @@ it("renders home", async () => {
         );
     });
 
-    expect(container.querySelector('h1').textContent).toBe('ZeroRebound');
+    expect(container.querySelector('div > h1').textContent).toBe('ZeroRebound');
     expect(container.querySelector('div div div a div h2').textContent).toBe(fakeArticle.title);
-    // expect(container.querySelector('div div div h3').textContent).toBe(`${fakeArticle.author.firstName} ${fakeArticle.author.lastName}`)
+    expect(container.querySelector('div div div h3').textContent).toBe(`${fakeArticle.author.firstName} ${fakeArticle.author.lastName}`)
+    expect(container.querySelector('div > div > div:nth-child(1) > h3:nth-child(3)').textContent).toBe(fakeArticle.text)
   });

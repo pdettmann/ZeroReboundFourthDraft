@@ -132,11 +132,8 @@ router.get('/articles', auth.requireUserLogin, (req, res) => {
 		include: [{ model: User, as: 'author', attributes: ['firstName', 'lastName'] }],
 	})
 		.then((articles) => {
-			if (!articles) {
-				res.status(404);
-				res.send({
-					error: 'No articles were found.',
-				});
+			if (articles.length == 0) {
+				res.send('No articles were found.');
 			} else {
 				res.send({
 					articles,

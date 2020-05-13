@@ -1,8 +1,4 @@
 const axios = require('axios');
-// const Jimp = require('jimp');
-// const looksSame = require('looks-same');
-// const fs = require('fs');
-// const imageDownloader = require('image-downloader');
 const app = require('../src/app');
 
 const PORT = 8081;
@@ -11,92 +7,101 @@ const client = axios.create({
 	withCredentials: true,
 });
 
+const createUser = async (done) => {
+    const userData = {
+        firstName: 'Padme',
+        lastName: 'Amidala',
+        email: 'padme@amidala.com',
+        password: 'maytheforcebewithyou',
+    };
+
+    await client.post('/user/create', userData);
+
+    done();
+};
+
 let server;
 
-beforeAll((done) => {
-	server = app.listen(PORT, async () => {
-		const data = {
-			firstName: 'Padme',
-			lastName: 'Amidala',
-			email: 'padme@amidala.com',
-			password: 'maytheforcebewithyou',
-		};
-
-		await client.post('/user/create', data);
-
-		done();
-	});
+beforeAll( (done) => {
+    server = app.listen(PORT)
+    createUser(done);
 });
 
-afterAll(async () => {
-	await server.close();
+afterAll( (done) => {
+	server.close();
+    done();
 });
 
-test('creates article', async () => {
-	const data = {
+test('creates article', async (done) => {
+    const articleData = {
 		title: 'title',
 		text: 'text',
 	};
 
-	const result = await client.post('/article/create', data);
+	const result = await client.post('/article/create', articleData);
 
 	const { article } = result.data;
 
-	expect(article.title).toBe(data.title);
-	expect(article.text).toBe(data.text);
+	expect(article.title).toBe(articleData.title);
+    expect(article.text).toBe(articleData.text);
+
+    done();
 });
 
-// test('finds article', async () => {
-// 	const data = {
-// 		author: {
-// 			firstName: 'Padme',
-// 			lastName: 'Amidala',
-// 		},
-// 		title: 'title',
-// 		text: 'text',
-// 	};
+test('gets home', async (done) => {
 
-// 	const result = await client.get(`/article/find?title=${data.title}`);
+	const articleData = {
+		title: 'title',
+        text: 'text',
+        author: {
+            firstName: 'Padme',
+            lastName: 'Amidala',
+        }
+	};
 
-// 	const { articles } = result.data;
-// 	const article = articles[0];
+	const result = await client.get('/article/home');
 
-// 	expect(article.title).toBe(data.title);
-// 	expect(article.text).toBe(data.text);
-// 	expect(article.author.firstName).toBe(data.author.firstName);
-// 	expect(article.author.lastName).toBe(data.author.lastName);
-// });
+	const { articles } = result.data;
+	const article = articles[0];
 
-// test('uploads image', async (done) => {
-// 	jest.setTimeout(10000);
+	expect(article.title).toBe(articleData.title);
+	expect(article.text).toBe(articleData.text);
+	expect(article.author.firstName).toBe(articleData.author.firstName);
+    expect(article.author.lastName).toBe(articleData.author.lastName);
 
-// 	const imagePath = `${__dirname}/../static/meme.png`;
+    done();
+});
 
-// 	const formData = new FormData();
-// 	const blob = new Blob([fs.readFileSync(imagePath)], { type: 'image/jpeg' });
-// 	formData.append('imageFile', blob);
+test('get article', async (done) => {
 
-// 	const result = await client.post('/article/imageupload', formData, {
-// 		headers : {
-// 			'Content-Type' : 'multipart/form-data',
-// 		},
-// 	});
+	const articleData = {
+        id: '1',
+		author: {
+			firstName: 'Padme',
+			lastName: 'Amidala',
+		},
+		title: 'title',
+		text: 'text',
+	};
 
-// 	const { imageUrl } = result.data
+	const result = await client.get(`/article/?articleId=${articleData.id}`);
 
-// 	const options = {
-// 		url: imageUrl,
-// 		dest: `${__dirname}/../static`,
-// 	}
+	const { article } = result.data;
 
-// 	const { filename } = await imageDownloader.image(options);
+	expect(article.title).toBe(articleData.title);
+	expect(article.text).toBe(articleData.text);
+	expect(article.author.firstName).toBe(articleData.author.firstName);
+    expect(article.author.lastName).toBe(articleData.author.lastName);
 
-// 	looksSame(filename, imagePath, (_, { equal }) => {
-// 		expect(equal).toBe(true);
-// 		done();
-// 	});
+    done();
+});
 
-// 	// need to test if the image is exactly the same
+test('delete article', async (done) => {
 
-// 	fs.unlinkSync(filename);
-// })
+    const result = await client.delete(`/article/deleteArticle?articleId=1`)
+
+    expect(result.data).toBe('OK');
+
+    done();
+});
+

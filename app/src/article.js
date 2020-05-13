@@ -14,7 +14,7 @@ const Article = (props) => {
     const performCreateComment = () => {
         apiClient.post('/comment/create', {
             text,
-            articleId
+            articleId,
         })
         .then((res) => {
             const newComments = comments;

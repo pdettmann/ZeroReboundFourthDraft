@@ -1,61 +1,107 @@
-// const axios = require('axios');
-// const app = require('../src/app');
+const axios = require('axios');
+const app = require('../src/app');
 
-// const PORT = 8082;
-// const client = axios.create({
-// 	baseURL: `http://localhost:${PORT}`,
-// 	withCredentials: true,
-// });
+const PORT = 8082;
+const client = axios.create({
+	baseURL: `http://localhost:${PORT}`,
+	withCredentials: true,
+});
 
-// let server;
+const createArticle = async (done) => {
+    const articleData = {
+		title: 'title',
+		text: 'text',
+    };
 
-// beforeAll(async () => {
-// 	server = app.listen(PORT);
+    await client.post('/article/create', articleData);
 
-// 	const data = {
-// 		firstName: 'Anakin',
-// 		lastName: 'Skywalker',
-// 		email: 'anakin@skywalker.com',
-// 		password: 'maytheforcebewithyou',
-// 	};
+    done();
+}
 
-// 	await client.post('/user/create', data);
-// });
+const createUser = async (done) => {
+    const userData = {
+        firstName: 'Anakin',
+        lastName: 'Skywalker',
+        email: 'anakin@skywalker.com',
+        password: 'maytheforcebewithyou',
+    };
 
-// afterAll(() => {
-// 	server.close();
-// });
+    await client.post('/user/create', userData);
 
-// test('creates comment', async () => {
-// 	const data = {
-// 		text: 'comment',
-// 		articleId: 1,
-// 	};
+    createArticle(done);
 
-// 	const result = await client.post('/comment/create', data);
+    done();
+};
 
-// 	const { comment } = result.data;
+let server;
 
-// 	expect(comment.text).toBe(data.text);
-// });
+beforeAll( (done) => {
+    server = app.listen(PORT);
+    createUser(done);
+    // createArticle(done);
+});
 
-// test('finds comment', async () => {
-// 	const data = {
-// 		commenter: {
-// 			firstName: 'Anakin',
-// 			lastName: 'Skywalker',
-// 		},
-// 		text: 'comment',
-// 	};
+afterAll( (done) => {
+    server.close();
+    done();
+});
 
-// 	const result = await client.get(`/comment/find?text=${data.text}`);
+test('creates comment', async (done) => {
+	const commentData = {
+        text: 'comment',
+        articleId: '1',
+        avatarUrl: 'https://www.gravatar.com/avatar/bc5752c2871af0466f7e2054f10d7326',
+        commenter: {
+			firstName: 'Anakin',
+			lastName: 'Skywalker',
+		},
+	};
 
-// 	const { comments } = result.data;
-// 	const comment = comments[0];
+	const result = await client.post('/comment/create', {
+        text: commentData.text,
+        articleId: commentData.articleId,
+    });
 
-// 	expect(comment.text).toBe(data.text);
-// 	expect(comment.commenter.firstName).toBe(data.commenter.firstName);
-// 	expect(comment.commenter.lastName).toBe(data.commenter.lastName);
-// 	expect(comment.avatarUrl).toBe(data.avatarUrl);
-// });
+	const { comment } = result.data;
 
+    expect(comment.text).toBe(commentData.text);
+    expect(comment.isCommenter).toBe(true);
+    expect(comment.avatarUrl).toBe(commentData.avatarUrl);
+    expect(comment.commenter.firstName).toBe(commentData.commenter.firstName);
+    expect(comment.commenter.lastName).toBe(commentData.commenter.lastName)
+
+    done();
+});
+
+test('finds first comment on a specific article', async (done) => {
+	const commentData = {
+        text: 'comment',
+        articleId: '1',
+        avatarUrl: 'https://www.gravatar.com/avatar/bc5752c2871af0466f7e2054f10d7326',
+        commenter: {
+			firstName: 'Anakin',
+			lastName: 'Skywalker',
+		},
+	};
+
+	const result = await client.get(`/comment/findByArticleId?articleId=${commentData.articleId}`);
+
+	const { comments } = result.data;
+	const comment = comments[0];
+
+	expect(comment.text).toBe(commentData.text);
+	expect(comment.commenter.firstName).toBe(commentData.commenter.firstName);
+	expect(comment.commenter.lastName).toBe(commentData.commenter.lastName);
+    expect(comment.avatarUrl).toBe(commentData.avatarUrl);
+
+    done();
+});
+
+test('delete comment', async (done) => {
+
+    const result = await client.delete(`/comment/deleteComment?commentId=1`)
+
+    expect(result.data).toBe('OK');
+
+    done();
+});

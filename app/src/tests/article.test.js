@@ -31,12 +31,21 @@ it("renders article", async () => {
         }
     };
 
-    const fakeComment = {
+    const fakeCommentOne = {
         id: '1',
         text: 'test comment',
         commenter: {
             firstName: 'Maggie',
             lastName: 'Rhee',
+       }
+    };
+
+    const fakeCommentTwo = {
+        id: '2',
+        text: 'test comment two',
+        commenter: {
+            firstName: 'Hershel',
+            lastName: 'Greene',
        }
     };
 
@@ -54,7 +63,7 @@ it("renders article", async () => {
                 return Promise.resolve({
                     data: {
                         comments: [
-                            fakeComment,
+                            fakeCommentOne,
                         ]
                     }
                 })
@@ -63,7 +72,16 @@ it("renders article", async () => {
             return Promise.reject();
         }),
         delete: () => {},
-        post: () => {},
+        post: ((path) => {
+            if (path === '/comment/create') {
+                return Promise.resolve({
+                    data: {
+                       comment: fakeCommentTwo,
+                    }
+                })
+            }
+            return Promise.reject();
+        }),
     };
 
     // Use the asynchronous version of act to apply resolved promises
@@ -81,6 +99,22 @@ it("renders article", async () => {
     expect(container.querySelector('h1').textContent).toBe(fakeArticle.title);
     expect(container.querySelector('div h3').textContent).toBe(`By ${fakeArticle.author.firstName} ${fakeArticle.author.lastName}`);
     expect(container.querySelector("p").textContent).toBe(fakeArticle.text);
-    expect(container.querySelector("div div div h3").textContent).toBe(`${fakeComment.commenter.firstName} ${fakeComment.commenter.lastName}`);
-    expect(container.querySelector("div div div p").textContent).toBe(fakeComment.text);
-  });
+    expect(container.querySelector("div div div h3").textContent).toBe(`${fakeCommentOne.commenter.firstName} ${fakeCommentOne.commenter.lastName}`);
+    expect(container.querySelector("div div div p").textContent).toBe(fakeCommentOne.text);
+
+    await act(async () => {
+        const button =  container.querySelector('div > button:nth-child(17)');
+        button.dispatchEvent(new MouseEvent('click'));
+        render(
+            <UserProvider>
+              <Router>
+                <Article apiClient={mockApiClient} match={{ params: { id: '1' } }} />
+              </Router>
+          </UserProvider>,
+          container
+        )
+    })
+
+    // expect(container.querySelector("div > div > div:nth-child(2) > h3").textContent).toBe(`${fakeCommentTwo.commenter.firstName} ${fakeCommentTwo.commenter.lastName}`);
+    // expect(container.querySelector("div div div p").textContent).toBe(fakeCommentTwo.text);
+});

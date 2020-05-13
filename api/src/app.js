@@ -16,15 +16,24 @@ const pgPool = new pg.Pool({
 
 const app = express();
 
+let origin = 'http://localhost:3000';
+
+if (process.env.NODE_ENV === 'test') {
+	origin = 'http://localhost'
+
+} else if (process.env.ZR_PRODUCTION === 'true') {
+	origin = 'https://zerorebound.com'
+}
+
 app.use(cors({
-	origin: process.env.ZR_PRODUCTION === 'true' ? 'https://zerorebound.com' : 'http://localhost:3000',
+	origin: origin,
 	credentials: true,
 }));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
-	store: dbConfig.env === 'test' ? null : new PgSession({ pool: pgPool }),
+	store: process.env.NODE_ENV === 'test' ? new session.MemoryStore() : new PgSession({ pool: pgPool }),
 	secret: process.env.ZR_SESSION_SECRET,
 	resave: false,
 	saveUninitialized: true,
