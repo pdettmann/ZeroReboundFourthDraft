@@ -4,99 +4,86 @@ const auth = require('../middlewares/auth');
 
 const router = express.Router();
 
-router.get('/home', (req, res) => {
-	Article.findAll({
-		limit: 3,
-		order: [['createdAt', 'DESC']],
-		attributes: ['id', 'title', 'text', 'createdAt'],
-		include: [{ model: User, as: 'author', attributes: ['firstName', 'lastName'] }],
-	})
-		.then((articles) => {
-			if (!articles) {
-				res.status(404);
-				res.send({
-					error: 'No articles',
-				});
-			} else {
-				res.send({ articles });
-			}
-		})
-		.catch((err) => {
-			res.status(400);
-			res.send(err);
+router.get('/home', async (req, res) => {
+	try {
+		const articles = await Article.findAll({
+			limit: 3,
+			order: [['createdAt', 'DESC']],
+			attributes: ['id', 'title', 'text', 'createdAt'],
+			include: [{ model: User, as: 'author', attributes: ['firstName', 'lastName'] }],
 		});
+
+		if (articles.length == 0) {
+			return res.status(404).send({ error: 'No articles' });
+		}
+
+		res.send({ articles })
+	} catch {
+		res.status(400).send({ error: 'Internal server error' });
+	}
 });
 
-// make into async await!
-router.post('/create', auth.requireUserLogin, (req, res) => {
+router.post('/create', auth.requireUserLogin, async (req, res) => {
 	const { title, text } = req.body;
 	const { userId } = req.session;
 
-	Article.create({
-		title,
-		userId,
-		text,
-	})
-		.then((article) => {
-			res.send({
-				article: {
-					title: article.title,
-					text: article.text,
-				},
-			});
+	try{
+		const article = await Article.create({
+			title,
+			userId,
+			text,
 		})
-		.catch((error) => {
-			res.status(400);
-			res.send({ error });
+
+		res.send({
+			article: {
+				title: article.title,
+				text: article.text,
+				id: article.id,
+			},
 		});
-});
 
-router.get('/', (req, res) => {
-	const { articleId } = req.query;
-
-	if (!articleId) {
-		res.status(404);
-		return res.send({ error: 'Missing parameters' });
+	} catch {
+		res.status(400).send({ error: 'Internal server error' });
 	}
-
-	return Article.findOne({
-		where: {
-			id: articleId,
-		},
-		attributes: ['id', 'title', 'text'],
-		include: [{ model: User, as: 'author', attributes: ['firstName', 'lastName'] }],
-	})
-		.then((article) => {
-			if (!article) {
-				res.status(404);
-				res.send({
-					error: 'No article was found.',
-				});
-			} else {
-				res.send({ article });
-			}
-		})
-		.catch((error) => {
-			res.status(400);
-			res.send(error);
-		});
 });
 
-router.delete('/deleteArticle', auth.requireUserLogin, (req, res) => {
+router.get('/', async (req, res) => {
 	const { articleId } = req.query;
 
-	Article.destroy({
-		where: {
-			id: articleId,
-		},
-	})
-		.then(() => {
-			res.sendStatus(200);
+	try{
+		if (!articleId) {
+			return res.status(404).send({ error: 'Missing parameters' });
+		}
+
+		const article = await Article.findOne({
+			where: {
+				id: articleId,
+			},
+			attributes: ['id', 'title', 'text'],
+			include: [{ model: User, as: 'author', attributes: ['firstName', 'lastName'] }],
 		})
-		.catch((error) => {
-			res.status(400);
-			res.send({ error });
-		});
+
+		if (!article) {
+			return res.status(404).send({ error: 'No article was found.' });
+		}
+
+		res.send({ article });
+
+	} catch {
+		res.status(400).send({ error: 'Internal server error' });
+	}
+});
+
+router.delete('/deleteArticle', auth.requireUserLogin, async (req, res) => {
+	const { articleId } = req.query;
+
+	try {
+		await Article.destroy({ where: { id: articleId } })
+
+		res.sendStatus(200);
+	} catch {
+		res.status(400).send({ error: 'Internal server error' });
+	}
 });
 
 

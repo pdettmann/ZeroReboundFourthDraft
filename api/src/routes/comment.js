@@ -5,116 +5,99 @@ const { getGravatarUrl } = require('../utils');
 const Sequelize = require('sequelize');
 const router = express.Router();
 
-// TODO: use async await!
-router.post('/create', auth.requireUserLogin, (req, res) => {
+router.post('/create', auth.requireUserLogin, async (req, res) => {
 	const { userId } = req.session;
 	const { text, articleId } = req.body;
 
-	Comment.create({
-		userId,
-		text,
-	})
-		.then((comment) => {
-			Comment.findOne({
-				where: {
-					id: comment.id,
-				},
-				include: [{ model: User, as: 'commenter', attributes: ['email', 'firstName', 'lastName'] }],
-			}).then((comment) => {
-				ArticlesComments.create({
-					articleId,
-					commentId: comment.id,
-				}).then(() => {
-					res.send({
-						comment: {
-							id: comment.id,
-							createdAt: comment.createdAt,
-							text: comment.text,
-							isCommenter: true,
-							avatarUrl: getGravatarUrl(comment.commenter.email),
-							commenter: {
-								firstName: comment.commenter.firstName,
-								lastName: comment.commenter.lastName,
-							},
-						},
-					});
-				})
-					.catch((error) => {
-						res.status(400);
-						res.send({ error });
-					});
-			});
-		})
-		.catch((error) => {
-			res.status(408);
-			res.send({ error });
+	try {
+		const createComment = await Comment.create({ userId, text });
+
+		const comment = await Comment.findOne({
+			where: {
+				id: createComment.id,
+			},
+			include: [{ model: User, as: 'commenter', attributes: ['email', 'firstName', 'lastName'] }],
 		});
+
+		await ArticlesComments.create({ articleId, commentId: comment.id })
+
+		res.send({
+			comment: {
+				id: comment.id,
+				createdAt: comment.createdAt,
+				text: comment.text,
+				isCommenter: true,
+				avatarUrl: getGravatarUrl(comment.commenter.email),
+				commenter: {
+					firstName: comment.commenter.firstName,
+					lastName: comment.commenter.lastName,
+				},
+			},
+		});
+
+
+	} catch {
+		res.status(404).send({ error: 'Internal server error' });
+	}
 });
 
-router.get('/findByArticleId', auth.requireUserLogin, (req, res) => {
+router.get('/findByArticleId', auth.requireUserLogin, async (req, res) => {
 	const { articleId } = req.query;
 	const { userId } = req.session;
 
-	if (!articleId) {
-		res.status(404);
-		return res.send({ error: 'Missing parameters' });
-	}
+	try {
+		if (!articleId) {
+			return res.status(404).send({ error: 'Missing parameters' });
+		}
 
-	return ArticlesComments.findAll({
-		where: {
-			articleId,
-		},
-		attributes: ['commentId'],
-		include: [
-			{
-				model: Comment,
-				as: 'comment',
-				attributes: ['id', 'userId', 'text', 'createdAt'],
-				include: { model: User, as: 'commenter', attributes: ['email', 'firstName', 'lastName'] },
+		const articlesComments = await ArticlesComments.findAll({
+			where: {
+				articleId,
 			},
-		],
-	})
-		.then((articlesComments) => {
-			const comments = articlesComments.map((e) => e.comment);
-
-			if (comments.length === 0) {
-				res.status(404);
-				res.send({
-					error: 'No comments were found.',
-				});
-			} else {
-				comments.forEach((comment) => {
-					comment.dataValues.avatarUrl = getGravatarUrl(comment.commenter.email);
-					delete comment.dataValues.commenter.dataValues.email;
-					comment.dataValues.isCommenter = (comment.dataValues.userId === userId);
-				});
-
-				res.send({
-					comments,
-				});
-			}
-		})
-		.catch((err) => {
-			res.status(400);
-			res.send(err);
+			attributes: ['commentId'],
+			include: [
+				{
+					model: Comment,
+					as: 'comment',
+					attributes: ['id', 'userId', 'text', 'createdAt'],
+					include: { model: User, as: 'commenter', attributes: ['email', 'firstName', 'lastName'] },
+				},
+			],
 		});
+
+		const comments = articlesComments.map((e) => e.comment);
+
+		if (comments.length === 0) {
+			return res.status(404).send({ error: 'No comments were found.' });
+		}
+
+		await comments.forEach((comment) => {
+			comment.dataValues.avatarUrl = getGravatarUrl(comment.commenter.email);
+			delete comment.dataValues.commenter.dataValues.email;
+			comment.dataValues.isCommenter = (comment.dataValues.userId === userId);
+		});
+
+		res.send({ comments });
+
+	} catch {
+		res.status(404).send({ error: 'Internal server error' });
+	}
 });
 
-router.delete('/deleteComment', auth.requireUserLogin, (req, res) => {
+router.delete('/deleteComment', auth.requireUserLogin, async (req, res) => {
 	const { commentId } = req.query;
 
-	Comment.destroy({
-		where: {
-			id: commentId,
-		},
-	})
-		.then(() => {
-			res.sendStatus(200);
+	try {
+		await Comment.destroy({
+			where: {
+				id: commentId,
+			},
 		})
-		.catch((error) => {
-			res.status(400);
-			res.send({ error });
-		});
+
+		res.sendStatus(200);
+	} catch {
+		res.status(404).send({ error: 'Comment cannot be deleted' });
+	}
 });
 
 module.exports = router;

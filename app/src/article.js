@@ -20,7 +20,7 @@ const Article = (props) => {
             const newComments = comments;
             newComments.splice(0, 0, res.data.comment);
 
-            setText('');
+            setText(null);
             setComments([]);
             setComments(newComments);
         })
@@ -84,7 +84,7 @@ const Article = (props) => {
                 <h1>{article.title}</h1><br></br><br></br>
                 <h3>{article.text}</h3><br></br><br></br>
                 <input type="text" value={text} id="comment" name="comment" placeholder="comment" onChange={(event) => setText(event.target.value)}/>
-                <button type='submit' onClick={() => performCreateComment()}> Comment </button><br></br>
+                <button id="createComment" type='submit' onClick={() => performCreateComment()}> Comment </button><br></br>
             </div>
         )
     } else {
@@ -97,8 +97,8 @@ const Article = (props) => {
                 <h1>{article.title}</h1><br></br>
                 <h3>By {article.author.firstName} {article.author.lastName}</h3><br></br>
                 <p>{article.text}</p><br></br><br></br>
-                <input type="text"  value={text} className="inputComment" placeholder="Comment here..." onChange={(event) => setText(event.target.value)}/>
-                <button type='submit' onClick={() => performCreateComment()}> Comment </button><br></br>
+                <input type="text"  value={text || ''} className="inputComment" placeholder="Comment here..." onChange={(event) => setText(event.target.value)}/>
+                <button id="createComment" type='submit' onClick={() => performCreateComment()}> Comment </button><br></br>
                 <div><br></br>
                 {comments.map((comment) => {
                     return  (

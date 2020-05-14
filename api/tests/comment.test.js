@@ -7,15 +7,17 @@ const client = axios.create({
 	withCredentials: true,
 });
 
-const createArticle = async (done) => {
+let articleId;
+
+const createArticle = async () => {
     const articleData = {
 		title: 'title',
 		text: 'text',
     };
 
-    await client.post('/article/create', articleData);
+    const result = await client.post('/article/create', articleData);
 
-    done();
+    articleId = result.data.article.id;
 }
 
 const createUser = async (done) => {
@@ -28,7 +30,7 @@ const createUser = async (done) => {
 
     await client.post('/user/create', userData);
 
-    createArticle(done);
+    await createArticle();
 
     done();
 };
@@ -38,7 +40,6 @@ let server;
 beforeAll( (done) => {
     server = app.listen(PORT);
     createUser(done);
-    // createArticle(done);
 });
 
 afterAll( (done) => {
@@ -49,7 +50,7 @@ afterAll( (done) => {
 test('creates comment', async (done) => {
 	const commentData = {
         text: 'comment',
-        articleId: '1',
+        articleId: articleId,
         avatarUrl: 'https://www.gravatar.com/avatar/bc5752c2871af0466f7e2054f10d7326',
         commenter: {
 			firstName: 'Anakin',
@@ -76,7 +77,7 @@ test('creates comment', async (done) => {
 test('finds first comment on a specific article', async (done) => {
 	const commentData = {
         text: 'comment',
-        articleId: '1',
+        articleId: articleId,
         avatarUrl: 'https://www.gravatar.com/avatar/bc5752c2871af0466f7e2054f10d7326',
         commenter: {
 			firstName: 'Anakin',
@@ -104,4 +105,39 @@ test('delete comment', async (done) => {
     expect(result.data).toBe('OK');
 
     done();
+});
+
+test('create comment with no text', async (done) => {
+	try {
+        await client.post('/comment/create', {
+            articleId: articleId,
+        });
+	} catch (error) {
+		expect(error.response.data.error).toBe('Internal server error');
+		expect(error.response.status).toBe(404);
+
+        done();
+	}
+});
+
+test('get comment with no articleId', async (done) => {
+	try {
+        await client.get('/comment/findByArticleId?articleId=');
+	} catch (error) {
+		expect(error.response.data.error).toBe('Missing parameters');
+		expect(error.response.status).toBe(404);
+
+        done();
+	}
+});
+
+test('comment cannot be deleted', async (done) => {
+	try {
+        await client.delete('/comment/deleteComment?commentId=');
+	} catch (error) {
+		expect(error.response.data.error).toBe('Comment cannot be deleted');
+		expect(error.response.status).toBe(404);
+
+        done();
+	}
 });

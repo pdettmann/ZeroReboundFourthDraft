@@ -4,22 +4,21 @@ import { act } from "react-dom/test-utils";
 import Article from "../article";
 import { UserProvider } from '../userContext';
 import { BrowserRouter as Router } from 'react-router-dom';
+import {  fireEvent } from "@testing-library/react";
 
 let container = null;
 beforeEach(() => {
-  // setup a DOM element as a render target
   container = document.createElement("div");
   document.body.appendChild(container);
 });
 
 afterEach(() => {
-  // cleanup on exiting
   unmountComponentAtNode(container);
   container.remove();
   container = null;
 });
 
-it("renders article", async () => {
+it("renders article and comments", async () => {
 
     const fakeArticle = {
         id: '4',
@@ -42,7 +41,10 @@ it("renders article", async () => {
 
     const fakeCommentTwo = {
         id: '2',
+		createdAt: 'now',
         text: 'test comment two',
+        isCommenter: true,
+        avatarUrl: 'https://s.gravatar.com/avatar/4cef868e242bddc5f51b158bd0f3fadf',
         commenter: {
             firstName: 'Hershel',
             lastName: 'Greene',
@@ -84,7 +86,6 @@ it("renders article", async () => {
         }),
     };
 
-    // Use the asynchronous version of act to apply resolved promises
     await act(async () => {
       render(
           <UserProvider>
@@ -103,18 +104,11 @@ it("renders article", async () => {
     expect(container.querySelector("div div div p").textContent).toBe(fakeCommentOne.text);
 
     await act(async () => {
-        const button =  container.querySelector('div > button:nth-child(17)');
-        button.dispatchEvent(new MouseEvent('click'));
-        render(
-            <UserProvider>
-              <Router>
-                <Article apiClient={mockApiClient} match={{ params: { id: '1' } }} />
-              </Router>
-          </UserProvider>,
-          container
-        )
-    })
+        const button =  container.querySelector('#createComment');
+        fireEvent.click(button);
+    });
 
-    // expect(container.querySelector("div > div > div:nth-child(2) > h3").textContent).toBe(`${fakeCommentTwo.commenter.firstName} ${fakeCommentTwo.commenter.lastName}`);
-    // expect(container.querySelector("div div div p").textContent).toBe(fakeCommentTwo.text);
+    expect(container.querySelector("div > div > div:nth-child(2) > h3").textContent).toBe(`${fakeCommentTwo.commenter.firstName} ${fakeCommentTwo.commenter.lastName}`);
+    expect(container.querySelector("div > div > div:nth-child(2) > p").textContent).toBe(fakeCommentTwo.text);
+
 });

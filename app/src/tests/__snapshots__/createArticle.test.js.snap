@@ -16,20 +16,21 @@ exports[`CreateArticle renders correctly 1`] = `
     Create an Article
   </h1>
   <input
-    class="titleCreateArticle"
+    className="titleCreateArticle"
     onChange={[Function]}
     placeholder="Title"
     type="text"
   />
   <br />
   <textarea
-    class="textCreateArticle"
+    className="textCreateArticle"
     onChange={[Function]}
     placeholder="Copy or write your article text here..."
     type="text"
   />
   <br />
   <button
+    id="createArticle"
     onClick={[Function]}
     type="submit"
   >

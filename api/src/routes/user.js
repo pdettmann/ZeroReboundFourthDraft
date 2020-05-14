@@ -6,7 +6,7 @@ const { getGravatarUrl } = require('../utils');
 
 const router = express.Router();
 
-router.post('/create', (req, res) => {
+router.post('/create', async (req, res) => {
 	const {
 		firstName,
 		lastName,
@@ -18,132 +18,109 @@ router.post('/create', (req, res) => {
 	const data = hash.update(password, 'utf-8');
 	const hashedPassword = data.digest('hex');
 
-	User.findOne({
-		where: {
-			email,
-		},
-	}).then((currentUser) => {
+	try {
+		const currentUser = await User.findOne({ where: { email } });
+
 		if (currentUser) {
-			res.status(405);
-			res.send({
-				error: 'User already exists.',
-			});
-		} else {
-			User.create({
-				firstName,
-				lastName,
-				email,
-				hashedPassword,
-			})
-				.then((user) => {
-					req.session.userId = user.id;
-					res.send({
-						user: {
-							firstName: user.firstName,
-							lastName: user.lastName,
-							email: user.email,
-						},
-					});
-				})
-				.catch((error) => {
-					res.send({
-						error,
-					});
-				});
+			return res.status(405).send({ error: 'User already exists.' });
 		}
-	});
+
+		const user = await User.create({
+			firstName,
+			lastName,
+			email,
+			hashedPassword,
+		});
+
+		req.session.userId = user.id;
+		res.send({
+			user: {
+				firstName: user.firstName,
+				lastName: user.lastName,
+				email: user.email,
+			},
+		});
+	} catch {
+		res.send({
+			error: 'Internal server error',
+		});
+	}
 });
 
-router.post('/auth', (req, res) => {
+router.post('/auth', async (req, res) => {
 	const { email } = req.body;
 	const { password } = req.body;
 
-	User.findOne({
-		where: {
-			email,
-		},
-	})
-		.then((user) => {
-			if (user === null) {
-				res.status(404);
-				res.send({ error: 'Invalid login.' });
-			} else {
-				const hash = crypto.createHash('sha512');
-				const data = hash.update(password, 'utf-8');
-				const hashedPassword = data.digest('hex');
+	try{
+		const user = await User.findOne({ where: { email } });
 
-				if (user.hashedPassword !== hashedPassword) {
-					res.status(401);
-					res.send({ error: 'Invalid login.' });
-				} else {
-					user.dataValues.avatarUrl = getGravatarUrl(user.email);
-					req.session.userId = user.id;
-					res.send({
-						user: {
-							firstName: user.firstName,
-							lastName: user.lastName,
-							email: user.email,
-						},
-					});
-				}
-			}
-		})
-		.catch((error) => {
-			res.status(400);
-			res.send({ error });
+		if (user === null) {
+			return res.status(404).send({ error: 'Invalid login.' });
+		}
+
+		const hash = crypto.createHash('sha512');
+		const data = hash.update(password, 'utf-8');
+		const hashedPassword = data.digest('hex');
+
+		if (user.hashedPassword !== hashedPassword) {
+			return res.status(401).send({ error: 'Invalid login.' });
+		}
+
+		user.dataValues.avatarUrl = getGravatarUrl(user.email);
+		req.session.userId = user.id;
+		res.send({
+			user: {
+				firstName: user.firstName,
+				lastName: user.lastName,
+				email: user.email,
+			},
 		});
+	} catch (error) {
+		res.status(400).send({ error: 'Internal server error' });
+	}
 });
 
-router.get('/profile', auth.requireUserLogin, (req, res) => {
+router.get('/profile', auth.requireUserLogin, async (req, res) => {
 	const { userId } = req.session;
 
-	User.findOne({
-		where: {
-			id: userId,
-		},
-		attributes: ['firstName', 'lastName', 'email'],
-	})
-		.then((user) => {
-			if (!user) {
-				res.status(404);
-				res.send({
-					error: 'No user was found.',
-				});
-			} else {
-				user.dataValues.avatarUrl = getGravatarUrl(user.email);
-
-				res.send({
-					user,
-				});
-			}
-		})
-		.catch((error) => {
-			res.status(400);
-			res.send({ error });
+	try {
+		const user = await User.findOne({
+			where: {
+				id: userId,
+			},
+			attributes: ['firstName', 'lastName', 'email'],
 		});
+
+		if (!user) {
+			return res.status(404).send({ error: 'No user was found.' });
+		}
+
+		user.dataValues.avatarUrl = getGravatarUrl(user.email);
+		res.send({ user });
+
+	} catch {
+		res.status(400).send({ error: 'Something went wrong' });
+	}
 });
 
-router.get('/articles', auth.requireUserLogin, (req, res) => {
+router.get('/articles', auth.requireUserLogin, async (req, res) => {
 	const { userId } = req.session;
 
-	Article.findAll({
-		where: { userId },
-		attributes: ['id', 'title', 'text'],
-		include: [{ model: User, as: 'author', attributes: ['firstName', 'lastName'] }],
-	})
-		.then((articles) => {
-			if (articles.length == 0) {
-				res.send('No articles were found.');
-			} else {
-				res.send({
-					articles,
-				});
-			}
-		})
-		.catch((error) => {
-			res.status(400);
-			res.send({ error });
+	try {
+		const articles = await Article.findAll({
+			where: { userId },
+			attributes: ['id', 'title', 'text'],
+			include: [{ model: User, as: 'author', attributes: ['firstName', 'lastName'] }],
 		});
+
+		if (articles.length == 0) {
+			return res.send('No articles were found.');
+		}
+
+		res.send({ articles });
+	} catch {
+		res.status(400).send({ error: 'Something went wrong' });
+	}
 });
 
 router.delete('/logout', auth.requireUserLogin, (req, res) => {
@@ -151,22 +128,16 @@ router.delete('/logout', auth.requireUserLogin, (req, res) => {
 	res.sendStatus(200);
 });
 
-router.delete('/deleteUser', auth.requireUserLogin, (req, res) => {
+router.delete('/deleteUser', auth.requireUserLogin, async (req, res) => {
 	const { userId } = req.session;
 
-	User.destroy({
-		where: {
-			id: userId,
-		},
-	})
-		.then(() => {
-			req.session.destroy();
-			res.sendStatus(200);
-		})
-		.catch((error) => {
-			res.status(400);
-			res.send({ error });
-		});
+	try{
+		await User.destroy({ where: { id: userId } })
+		req.session.destroy();
+		res.sendStatus(200);
+	} catch {
+		res.status(400).send({ error });
+	}
 });
 
 module.exports = router;

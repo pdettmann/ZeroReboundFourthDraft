@@ -7,6 +7,8 @@ const client = axios.create({
 	withCredentials: true,
 });
 
+let articleId;
+
 const createUser = async (done) => {
     const userData = {
         firstName: 'Padme',
@@ -42,6 +44,8 @@ test('creates article', async (done) => {
 
 	const { article } = result.data;
 
+	articleId = article.id;
+
 	expect(article.title).toBe(articleData.title);
     expect(article.text).toBe(articleData.text);
 
@@ -75,7 +79,7 @@ test('gets home', async (done) => {
 test('get article', async (done) => {
 
 	const articleData = {
-        id: '1',
+        id: articleId,
 		author: {
 			firstName: 'Padme',
 			lastName: 'Amidala',
@@ -98,10 +102,20 @@ test('get article', async (done) => {
 
 test('delete article', async (done) => {
 
-    const result = await client.delete(`/article/deleteArticle?articleId=1`)
+    const result = await client.delete(`/article/deleteArticle?articleId=${articleId}`)
 
     expect(result.data).toBe('OK');
 
     done();
+});
+
+test('home with no articles', async (done) => {
+	try {
+		await client.get('/article/home');
+	} catch (error) {
+		expect(error.response.data.error).toBe('No articles');
+		expect(error.response.status).toBe(404);
+		done();
+	}
 });
 
