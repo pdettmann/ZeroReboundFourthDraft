@@ -9,7 +9,7 @@ const db = {};
 // setting up a connection to the database
 const sequelize = new Sequelize(config.database, config.username, config.password, config);
 
-// reads every file in models and sets any associations between models, foreign keys, cascades, etc.
+// file system reads every file in models and sets any associations between models, foreign keys, cascades.
 fs
 	.readdirSync(__dirname)
 	.filter((file) => (

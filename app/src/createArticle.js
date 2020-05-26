@@ -1,4 +1,4 @@
-import React, {useState, useContext} from "react";
+import React, { useState } from "react";
 import { Redirect } from 'react-router-dom';
 
 const CreateArticle = (props) => {
@@ -9,24 +9,24 @@ const CreateArticle = (props) => {
     const [error, setError] = useState();
     const { apiClient } = props;
 
-    const performCreateArticle = () => {
-        apiClient.post('/article/create', {title, text})
-            .then((res) => {
-                setRedirectUrl('/profile');
-            })
-            .catch((err) => {
-                setError('Something went wrong')
-            });
+    const performCreateArticle = async () => {
+        try {
+            await apiClient.post('/article/create', {title, text})
+
+            setRedirectUrl('/profile');
+        } catch {
+            setError('Something went wrong, could not create article')
+        }
     };
 
     if (redirectUrl) {
         return <Redirect to={redirectUrl} />
-    };
+    }
 
     if (error) {
         alert(error);
         setError(undefined);
-    };
+    }
 
     return (
         <div>

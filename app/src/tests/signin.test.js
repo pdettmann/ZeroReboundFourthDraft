@@ -20,6 +20,7 @@ afterEach(() => {
 });
 
 it("renders Signin page", async () => {
+    let gotCalled = false;
 
     const mockApiClient = {
         get: ((path) => {
@@ -29,8 +30,9 @@ it("renders Signin page", async () => {
         }),
         delete: () => {},
         post: ((path) => {
+            gotCalled = true;
             if (path === '/user/auth') {
-                return Promise.reject();
+                return Promise.resolve();
             }
         }),
     };
@@ -46,3 +48,5 @@ it("renders Signin page", async () => {
     let tree = component.toJSON();
     expect(tree).toMatchSnapshot();
 });
+
+

@@ -11,5 +11,4 @@ export const UserProvider = (props) => {
             {props.children}
         </UserContext.Provider>
     );
-
 };

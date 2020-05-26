@@ -20,27 +20,23 @@ afterEach(() => {
 });
 
 test('CreateArticle renders correctly', () => {
-		const component = renderer.create(
-				<UserProvider>
-						<CreateArticle />
-				</UserProvider>
-			);
-			let tree = component.toJSON();
-			expect(tree).toMatchSnapshot();
+	const component = renderer.create(
+		<UserProvider>
+				<CreateArticle />
+		</UserProvider>
+	);
+	let tree = component.toJSON();
+	expect(tree).toMatchSnapshot();
 });
 
 test('Article gets created', async () => {
+	let gotCalled = false;
+
 	const mockApiClient = {
 		post: ((path) => {
 			if (path === '/article/create') {
-				return Promise.resolve({
-					data: {
-						article: {
-							title: 'something',
-							text: 'something else',
-						},
-				 }
-				});
+				gotCalled = true;
+				return Promise.resolve();
 			}
 			return Promise.reject();
 		}),
@@ -61,5 +57,6 @@ test('Article gets created', async () => {
 		const button =  container.querySelector('#createArticle');
 		fireEvent.click(button);
 	});
-// add test
+
+    expect(gotCalled).toBe(true);
 });

@@ -13,35 +13,31 @@ const Signup = (props) => {
     const [user, setUser] = useContext(UserContext);
     const { apiClient } = props;
 
-    const performSignup = () => {
-        if (password === passwordTwo) {
-            apiClient.post('/user/create', {firstName, lastName, email, password})
-            .then((res) => {
-                setUser(res.data.user);
-            })
-            .catch((err) => {
-                console.log(err);
-                setError('Something went wrong')
-            });
-        } else {
-            setError('Passwords do not match, please try again');
+    const performSignup = async () => {
+        if (password !== passwordTwo) {
+            return setError('Passwords do not match, please try again')
+        }
+
+        try {
+            const userResult = await apiClient.post('/user/create', {firstName, lastName, email, password});
+            setUser(userResult.data.user);
+        } catch {
+            setError('Something went wrong')
         }
     };
 
     if (redirectUrl) {
         return <Redirect to={redirectUrl} />
-    };
+    }
 
     if (user) {
         return <Redirect to="/profile" />
-    };
+    }
 
     if (error) {
         alert(error);
         setError(undefined);
     }
-
-
 
     return (
         <div className='signup'>
@@ -53,7 +49,7 @@ const Signup = (props) => {
             <input type="text" id="email"  placeholder='Email' onChange={(event)=> setEmail(event.target.value)}/><br></br>
             <input type="password" id="password" placeholder="Password" onChange={(event)=> setPassword(event.target.value)}/><br></br>
             <input type="password" id="passwordTwo" placeholder="Repeat Password" onChange={(event)=> setPasswordTwo(event.target.value)}></input><br></br>
-            <button type='submit' onClick={() => performSignup()}> Submit </button><br></br>
+            <button type='submit' id='signup' onClick={() => performSignup()}> Submit </button><br></br>
         </div>
     );
 }

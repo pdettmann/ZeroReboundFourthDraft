@@ -10,32 +10,32 @@ const client = axios.create({
 let articleId;
 
 const createUser = async (done) => {
-    const userData = {
-        firstName: 'Padme',
-        lastName: 'Amidala',
-        email: 'padme@amidala.com',
-        password: 'maytheforcebewithyou',
-    };
+	const userData = {
+		firstName: 'Padme',
+		lastName: 'Amidala',
+		email: 'padme@amidala.com',
+		password: 'maytheforcebewithyou',
+	};
 
-    await client.post('/user/create', userData);
+	await client.post('/user/create', userData);
 
-    done();
+	done();
 };
 
 let server;
 
-beforeAll( (done) => {
-    server = app.listen(PORT)
-    createUser(done);
+beforeAll((done) => {
+	server = app.listen(PORT);
+	createUser(done);
 });
 
-afterAll( (done) => {
+afterAll((done) => {
 	server.close();
-    done();
+	done();
 });
 
 test('creates article', async (done) => {
-    const articleData = {
+	const articleData = {
 		title: 'title',
 		text: 'text',
 	};
@@ -47,20 +47,19 @@ test('creates article', async (done) => {
 	articleId = article.id;
 
 	expect(article.title).toBe(articleData.title);
-    expect(article.text).toBe(articleData.text);
+	expect(article.text).toBe(articleData.text);
 
-    done();
+	done();
 });
 
-test('gets home', async (done) => {
-
+test('get home articles', async (done) => {
 	const articleData = {
 		title: 'title',
-        text: 'text',
-        author: {
-            firstName: 'Padme',
-            lastName: 'Amidala',
-        }
+		text: 'text',
+		author: {
+			firstName: 'Padme',
+			lastName: 'Amidala',
+		},
 	};
 
 	const result = await client.get('/article/home');
@@ -71,15 +70,14 @@ test('gets home', async (done) => {
 	expect(article.title).toBe(articleData.title);
 	expect(article.text).toBe(articleData.text);
 	expect(article.author.firstName).toBe(articleData.author.firstName);
-    expect(article.author.lastName).toBe(articleData.author.lastName);
+	expect(article.author.lastName).toBe(articleData.author.lastName);
 
-    done();
+	done();
 });
 
 test('get article', async (done) => {
-
 	const articleData = {
-        id: articleId,
+		id: articleId,
 		author: {
 			firstName: 'Padme',
 			lastName: 'Amidala',
@@ -95,18 +93,17 @@ test('get article', async (done) => {
 	expect(article.title).toBe(articleData.title);
 	expect(article.text).toBe(articleData.text);
 	expect(article.author.firstName).toBe(articleData.author.firstName);
-    expect(article.author.lastName).toBe(articleData.author.lastName);
+	expect(article.author.lastName).toBe(articleData.author.lastName);
 
-    done();
+	done();
 });
 
 test('delete article', async (done) => {
+	const result = await client.delete(`/article/deleteArticle?articleId=${articleId}`);
 
-    const result = await client.delete(`/article/deleteArticle?articleId=${articleId}`)
+	expect(result.data).toBe('OK');
 
-    expect(result.data).toBe('OK');
-
-    done();
+	done();
 });
 
 test('home with no articles', async (done) => {
@@ -115,7 +112,6 @@ test('home with no articles', async (done) => {
 	} catch (error) {
 		expect(error.response.data.error).toBe('No articles');
 		expect(error.response.status).toBe(404);
-		done();
 	}
+	done();
 });
-

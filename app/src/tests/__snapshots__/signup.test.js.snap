@@ -51,6 +51,7 @@ exports[`Signup renders correctly 1`] = `
   />
   <br />
   <button
+    id="signup"
     onClick={[Function]}
     type="submit"
   >

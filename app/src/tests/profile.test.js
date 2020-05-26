@@ -4,6 +4,7 @@ import { act } from "react-dom/test-utils";
 import Profile from "../profile";
 import { UserProvider } from '../userContext';
 import { BrowserRouter as Router } from 'react-router-dom';
+import {  fireEvent } from "@testing-library/react";
 
 let container = null;
 beforeEach(() => {
@@ -27,6 +28,8 @@ it("renders user profile data", async () => {
         email: "rick.grimes@gmail.com"
     };
 
+    let gotCalled = false;
+
     const mockApiClient = {
         get: ((path) => {
             if (path === '/user/profile') {
@@ -44,6 +47,10 @@ it("renders user profile data", async () => {
                             {
                                 id: 1,
                                 title: 'Test article'
+                            },
+                            {
+                                id: 2,
+                                title: 'Another Article'
                             }
                         ]
                     }
@@ -52,11 +59,15 @@ it("renders user profile data", async () => {
 
             return Promise.reject();
         }),
-        delete: () => {},
+        delete: ((path) => {
+            if (path === '/user/logout') {
+                gotCalled = true;
+                return Promise.resolve()
+            }
+        }),
         post: () => {},
     };
 
-    // Use the asynchronous version of act to apply resolved promises
     await act(async () => {
       render(
           <UserProvider>
@@ -70,4 +81,13 @@ it("renders user profile data", async () => {
 
     expect(container.querySelector('h1').textContent).toBe(`Welcome ${fakeUser.firstName}`);
     expect(container.querySelector("h3").textContent).toBe(`Name: ${fakeUser.firstName} ${fakeUser.lastName}`);
-  });
+    expect(container.querySelector('div > div > div:nth-child(1) > a > div > h1').textContent).toBe('Test article')
+    expect(container.querySelector('div > div > div:nth-child(2) > a > div > h1').textContent).toBe('Another Article')
+
+    await act(async () => {
+        const button =  container.querySelector('#logout');
+        fireEvent.click(button);
+    });
+
+    expect(gotCalled).toBe(true);
+});

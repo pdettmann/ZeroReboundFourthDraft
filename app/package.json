@@ -1,8 +1,5 @@
 {
   "name": "app",
-  "jest": {
-    "preset": "jest-puppeteer"
-  },
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -38,6 +35,8 @@
     ]
   },
   "devDependencies": {
+    "eslint": "^6.6.0",
+    "eslint-plugin-react": "^7.20.0",
     "jest-puppeteer": "^4.4.0",
     "react-test-renderer": "^16.13.1"
   }

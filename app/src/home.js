@@ -4,20 +4,30 @@ import { Redirect } from 'react-router-dom';
 function Home (props) {
     const [articles, setArticles] = useState([]);
     const [redirectUrl, setRedirectUrl] = useState();
+    const [error, setError] = useState();
     const { apiClient } = props;
 
     useEffect(() => {
-        apiClient.get('/article/home')
-        .then((res) => {
-            setArticles(res.data.articles);
-        })
-        .catch((err) => {
-            console.log(err);
-        });
-    }, []);
+        let isMounted = true;
+
+        (async() => {
+            const res = await apiClient.get('/article/home').catch(() => setError('Something went wrong, could not load page'));
+
+            if (res && isMounted) { setArticles(res.data.articles) }
+        })()
+
+        return () => {
+            isMounted = false;
+        }
+    }, [apiClient]);
 
     if (redirectUrl) {
         return <Redirect to={redirectUrl} />
+    }
+
+    if (error) {
+        alert(error);
+        setError(undefined);
     }
 
     return (

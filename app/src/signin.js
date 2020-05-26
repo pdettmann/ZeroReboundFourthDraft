@@ -12,24 +12,28 @@ const Signin = (props) => {
     const { apiClient } = props;
 
     useEffect(() => {
-        apiClient.get('/user/profile')
-        .then((res) => {
-            setUser(res.data.user);
-        })
-        .catch((error) => {
-            setLoading(false);
-        });
-    }, []);
+        let isMounted = true;
 
-    const performSignin = () => {
-        apiClient.post('/user/auth', {email, password})
-            .then((res) => {
-                setUser(res.data.user);
-                setRedirectUrl('/profile');
-            })
-            .catch((error) => {
-                setError('invalid login');
-            });
+        (async () => {
+            const profileResult = await apiClient.get('/user/profile').catch(() => setLoading(false))
+
+            if (profileResult && isMounted) { setUser(profileResult.data.user) }
+        })()
+
+        return () => {
+            isMounted = false;
+        }
+    }, [apiClient, setUser]);
+
+    const performSignin = async () => {
+        try {
+            const authResult = await apiClient.post('/user/auth', {email, password})
+
+            setUser(authResult.data.user);
+            setRedirectUrl('/profile');
+        } catch {
+            setError('invalid login');
+        }
     }
 
     if (redirectUrl) {
@@ -55,7 +59,7 @@ const Signin = (props) => {
             <h1>Sign in</h1>
             <input type="text" className="signinEmail" placeholder='Email' onChange={(event)=> setEmail(event.target.value)}/><br></br>
             <input type="password" className="signinPassword" placeholder='Password'  onChange={(event)=> setPassword(event.target.value)}/><br></br>
-            <button type='submit' onClick={() => performSignin()}> Submit </button><br></br>
+            <button type='submit' id='submitSignin' onClick={() => performSignin()}> Submit </button><br></br>
             <button type='signup' onClick={() => setRedirectUrl('/signup')}>Register </button><br></br>
         </div>
     );

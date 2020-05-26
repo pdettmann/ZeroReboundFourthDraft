@@ -16,7 +16,7 @@ beforeAll((done) => {
 
 afterAll((done) => {
 	server.close();
-	done()
+	done();
 });
 
 test('creates user', async (done) => {
@@ -79,11 +79,15 @@ test('gets user profile', async (done) => {
 	done();
 });
 
+test('get user articles without articles', async (done) => {
+	const result = await client.get('/user/articles');
+
+	expect(result.data).toBe('No articles were found.');
+
+	done();
+});
+
 test('gets user articles', async (done) => {
-	const noArticlesResult = await client.get('/user/articles')
-
-	expect(noArticlesResult.data).toBe('No articles were found.');
-
 	const articleData = {
 		title: 'title',
 		text: 'text',
@@ -91,25 +95,25 @@ test('gets user articles', async (done) => {
 
 	await client.post('/article/create', articleData);
 
-	const oneArticleResult = await client.get('/user/articles')
+	const result = await client.get('/user/articles');
 
-	const { articles } = oneArticleResult.data;
-	article = articles[0];
+	const { articles } = result.data;
+	const article = articles[0];
 
 	expect(article.title).toBe('title');
 	expect(article.text).toBe('text');
-	expect(article.author.firstName).toBe('Obi-Wan')
-	expect(article.author.lastName).toBe('Kenobi')
+	expect(article.author.firstName).toBe('Obi-Wan');
+	expect(article.author.lastName).toBe('Kenobi');
 
 	done();
 });
 
 test('logout user', async (done) => {
-    const result = await client.delete('/user/logout');
+	const result = await client.delete('/user/logout');
 
-    expect(result.data).toBe('OK');
+	expect(result.data).toBe('OK');
 
-    done();
+	done();
 });
 
 test('delete user', async (done) => {
@@ -123,9 +127,9 @@ test('delete user', async (done) => {
 		password: userData.password,
 	});
 
-    const result = await client.delete('/user/deleteUser');
+	const result = await client.delete('/user/deleteUser');
 
-    expect(result.data).toBe('OK');
+	expect(result.data).toBe('OK');
 
-    done();
+	done();
 });

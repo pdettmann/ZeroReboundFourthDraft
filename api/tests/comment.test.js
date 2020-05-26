@@ -10,76 +10,76 @@ const client = axios.create({
 let articleId;
 
 const createArticle = async () => {
-    const articleData = {
+	const articleData = {
 		title: 'title',
 		text: 'text',
-    };
+	};
 
-    const result = await client.post('/article/create', articleData);
+	const result = await client.post('/article/create', articleData);
 
-    articleId = result.data.article.id;
-}
+	articleId = result.data.article.id;
+};
 
 const createUser = async (done) => {
-    const userData = {
-        firstName: 'Anakin',
-        lastName: 'Skywalker',
-        email: 'anakin@skywalker.com',
-        password: 'maytheforcebewithyou',
-    };
+	const userData = {
+		firstName: 'Anakin',
+		lastName: 'Skywalker',
+		email: 'anakin@skywalker.com',
+		password: 'maytheforcebewithyou',
+	};
 
-    await client.post('/user/create', userData);
+	await client.post('/user/create', userData);
 
-    await createArticle();
+	await createArticle();
 
-    done();
+	done();
 };
 
 let server;
 
-beforeAll( (done) => {
-    server = app.listen(PORT);
-    createUser(done);
+beforeAll((done) => {
+	server = app.listen(PORT);
+	createUser(done);
 });
 
-afterAll( (done) => {
-    server.close();
-    done();
+afterAll((done) => {
+	server.close();
+	done();
 });
 
 test('creates comment', async (done) => {
 	const commentData = {
-        text: 'comment',
-        articleId: articleId,
-        avatarUrl: 'https://www.gravatar.com/avatar/bc5752c2871af0466f7e2054f10d7326',
-        commenter: {
+		text: 'comment',
+		articleId,
+		avatarUrl: 'https://www.gravatar.com/avatar/bc5752c2871af0466f7e2054f10d7326',
+		commenter: {
 			firstName: 'Anakin',
 			lastName: 'Skywalker',
 		},
 	};
 
 	const result = await client.post('/comment/create', {
-        text: commentData.text,
-        articleId: commentData.articleId,
-    });
+		text: commentData.text,
+		articleId: commentData.articleId,
+	});
 
 	const { comment } = result.data;
 
-    expect(comment.text).toBe(commentData.text);
-    expect(comment.isCommenter).toBe(true);
-    expect(comment.avatarUrl).toBe(commentData.avatarUrl);
-    expect(comment.commenter.firstName).toBe(commentData.commenter.firstName);
-    expect(comment.commenter.lastName).toBe(commentData.commenter.lastName)
+	expect(comment.text).toBe(commentData.text);
+	expect(comment.isCommenter).toBe(true);
+	expect(comment.avatarUrl).toBe(commentData.avatarUrl);
+	expect(comment.commenter.firstName).toBe(commentData.commenter.firstName);
+	expect(comment.commenter.lastName).toBe(commentData.commenter.lastName);
 
-    done();
+	done();
 });
 
 test('finds first comment on a specific article', async (done) => {
 	const commentData = {
-        text: 'comment',
-        articleId: articleId,
-        avatarUrl: 'https://www.gravatar.com/avatar/bc5752c2871af0466f7e2054f10d7326',
-        commenter: {
+		text: 'comment',
+		articleId,
+		avatarUrl: 'https://www.gravatar.com/avatar/bc5752c2871af0466f7e2054f10d7326',
+		commenter: {
 			firstName: 'Anakin',
 			lastName: 'Skywalker',
 		},
@@ -93,51 +93,50 @@ test('finds first comment on a specific article', async (done) => {
 	expect(comment.text).toBe(commentData.text);
 	expect(comment.commenter.firstName).toBe(commentData.commenter.firstName);
 	expect(comment.commenter.lastName).toBe(commentData.commenter.lastName);
-    expect(comment.avatarUrl).toBe(commentData.avatarUrl);
+	expect(comment.avatarUrl).toBe(commentData.avatarUrl);
 
-    done();
+	done();
 });
 
 test('delete comment', async (done) => {
+	const result = await client.delete('/comment/deleteComment?commentId=1');
 
-    const result = await client.delete(`/comment/deleteComment?commentId=1`)
+	expect(result.data).toBe('OK');
 
-    expect(result.data).toBe('OK');
-
-    done();
+	done();
 });
 
 test('create comment with no text', async (done) => {
 	try {
-        await client.post('/comment/create', {
-            articleId: articleId,
-        });
+		await client.post('/comment/create', {
+			articleId,
+		});
 	} catch (error) {
 		expect(error.response.data.error).toBe('Internal server error');
 		expect(error.response.status).toBe(404);
 
-        done();
+		done();
 	}
 });
 
 test('get comment with no articleId', async (done) => {
 	try {
-        await client.get('/comment/findByArticleId?articleId=');
+		await client.get('/comment/findByArticleId?articleId=');
 	} catch (error) {
 		expect(error.response.data.error).toBe('Missing parameters');
 		expect(error.response.status).toBe(404);
 
-        done();
+		done();
 	}
 });
 
 test('comment cannot be deleted', async (done) => {
 	try {
-        await client.delete('/comment/deleteComment?commentId=');
+		await client.delete('/comment/deleteComment?commentId=');
 	} catch (error) {
 		expect(error.response.data.error).toBe('Comment cannot be deleted');
 		expect(error.response.status).toBe(404);
 
-        done();
+		done();
 	}
 });

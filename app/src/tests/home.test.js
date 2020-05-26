@@ -19,7 +19,7 @@ afterEach(() => {
   container = null;
 });
 
-it("renders home", async () => {
+it("renders home article", async () => {
     const fakeArticle =  {
         id: '1',
         title: 'This is a test-article',
